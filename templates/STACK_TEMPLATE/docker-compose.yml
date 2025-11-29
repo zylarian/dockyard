@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    image: your-image:latest
+    container_name: ${COMPOSE_PROJECT_NAME:-myapp}_app
+    restart: unless-stopped
+    
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+    
+    env_file:
+      - .env
+    
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    
+    volumes:
+      - app_data:/app/data
+      - ./configs:/app/config:ro
+    
+    networks:
+      - backend
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  app_data:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge

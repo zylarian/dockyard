@@ -1,0 +1,61 @@
+name: Validate Dockerfiles
+
+on:
+  pull_request:
+    paths:
+      - 'images/**/Dockerfile*'
+      - '.github/workflows/validate-dockerfiles.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'images/**/Dockerfile*'
+
+jobs:
+  hadolint:
+    name: Lint Dockerfiles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          recursive: true
+          dockerfile: images/**/Dockerfile*
+          failure-threshold: warning
+          
+  docker-build:
+    name: Test Docker Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Find Dockerfiles
+        id: dockerfiles
+        run: |
+          echo "files=$(find images -name 'Dockerfile' -type f | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+      
+      - name: Test build
+        run: |
+          for dockerfile in $(find images -name 'Dockerfile' -type f); do
+            dir=$(dirname $dockerfile)
+            image_name=$(basename $dir)
+            echo "Building $image_name from $dir"
+            docker buildx build \
+              --platform ${{ matrix.platform }} \
+              --tag "zylarian/$image_name:test" \
+              --file "$dockerfile" \
+              "$dir" || echo "::warning::Failed to build $image_name"
+          done

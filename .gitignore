@@ -1,0 +1,23 @@
+# Environment files
+.env
+*.env
+!.env.example
+
+# Data directories
+**/data/
+**/volumes/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
