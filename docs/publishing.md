@@ -9,7 +9,7 @@ This guide explains how to publish Zylarian Dockyard images to Docker Hub.
 ```bash
 # Login to Docker Hub
 docker login -u zylarian
-# Enter token when prompted: dckr_pat_***
+# Enter token when prompted: ******
 ```
 
 ## 🚀 Publishing Images (Manual Workflow)
