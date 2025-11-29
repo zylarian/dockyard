@@ -1,0 +1,64 @@
+# Debian variant - Full-featured
+FROM python:3.12-slim-bookworm
+
+# Build arguments
+ARG LANGFLOW_VERSION=1.6.9
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+LABEL maintainer="Zylarian Innovations LLC <support@zylarian.com>"
+LABEL org.opencontainers.image.source="https://github.com/zylarian/dockyard"
+LABEL org.opencontainers.image.description="Langflow ${LANGFLOW_VERSION} - UI for LangChain (Debian)"
+LABEL org.opencontainers.image.vendor="Zylarian Innovations LLC"
+LABEL org.opencontainers.image.version="${LANGFLOW_VERSION}"
+
+# Environment variables
+ENV LANGFLOW_VERSION=${LANGFLOW_VERSION} \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    LANGFLOW_HOST=0.0.0.0 \
+    LANGFLOW_PORT=7860 \
+    LANGFLOW_DATABASE_URL=sqlite:///./data/langflow.db \
+    DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r langflow -g 1000 && \
+    useradd -r -g langflow -u 1000 -m -s /bin/bash langflow
+
+# Set working directory
+WORKDIR /app
+
+# Install Langflow
+RUN pip install --no-cache-dir \
+    langflow==${LANGFLOW_VERSION} \
+    && pip cache purge
+
+# Create directories and set permissions
+RUN mkdir -p /app/data /app/logs && \
+    chown -R langflow:langflow /app
+
+# Switch to non-root user
+USER langflow
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:7860/health || exit 1
+
+# Expose port
+EXPOSE 7860
+
+# Volume for persistent data
+VOLUME ["/app/data"]
+
+# Start Langflow
+CMD ["langflow", "run", "--host", "0.0.0.0", "--port", "7860"]

@@ -1,0 +1,25 @@
+# Langflow Image Version Configuration
+# This file controls which version of Langflow to build
+
+# Current Langflow version
+LANGFLOW_VERSION=1.6.9
+
+# Release date
+RELEASE_DATE=2024-11-25
+
+# Supported variants
+VARIANTS="debian alpine"
+
+# Supported architectures
+ARCHITECTURES="linux/amd64,linux/arm64,linux/arm/v7"
+
+# Image name
+IMAGE_NAME=zylarian/dockyard-langflow
+
+# Tag strategy:
+# - {VERSION}                    -> Debian multi-arch (1.6.9)
+# - {VERSION}-debian            -> Debian multi-arch (1.6.9-debian)
+# - {VERSION}-alpine            -> Alpine multi-arch (1.6.9-alpine)
+# - latest                      -> Latest Debian multi-arch
+# - latest-debian               -> Latest Debian multi-arch
+# - latest-alpine               -> Latest Alpine multi-arch

@@ -1,0 +1,65 @@
+# Alpine variant - Minimal, production-ready
+FROM python:3.12-alpine
+
+# Build arguments
+ARG LANGFLOW_VERSION=1.6.9
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+LABEL maintainer="Zylarian Innovations LLC <support@zylarian.com>"
+LABEL org.opencontainers.image.source="https://github.com/zylarian/dockyard"
+LABEL org.opencontainers.image.description="Langflow ${LANGFLOW_VERSION} - UI for LangChain (Alpine)"
+LABEL org.opencontainers.image.vendor="Zylarian Innovations LLC"
+LABEL org.opencontainers.image.version="${LANGFLOW_VERSION}"
+
+# Environment variables
+ENV LANGFLOW_VERSION=${LANGFLOW_VERSION} \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    LANGFLOW_HOST=0.0.0.0 \
+    LANGFLOW_PORT=7860 \
+    LANGFLOW_DATABASE_URL=sqlite:///./data/langflow.db
+
+# Install system dependencies
+RUN apk add --no-cache \
+    build-base \
+    curl \
+    git \
+    libffi-dev \
+    openssl-dev \
+    postgresql-dev \
+    && rm -rf /var/cache/apk/*
+
+# Create non-root user
+RUN addgroup -g 1000 langflow && \
+    adduser -D -u 1000 -G langflow langflow
+
+# Set working directory
+WORKDIR /app
+
+# Install Langflow
+RUN pip install --no-cache-dir \
+    langflow==${LANGFLOW_VERSION} \
+    && pip cache purge
+
+# Create directories and set permissions
+RUN mkdir -p /app/data /app/logs && \
+    chown -R langflow:langflow /app
+
+# Switch to non-root user
+USER langflow
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost:7860/health || exit 1
+
+# Expose port
+EXPOSE 7860
+
+# Volume for persistent data
+VOLUME ["/app/data"]
+
+# Start Langflow
+CMD ["langflow", "run", "--host", "0.0.0.0", "--port", "7860"]

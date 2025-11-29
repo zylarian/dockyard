@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  langflow:
+    # Use Debian variant (recommended, multi-arch)
+    image: zylarian/dockyard-langflow:1.6.9
+
+    # Alternative: Alpine variant (smaller, multi-arch)
+    # image: zylarian/dockyard-langflow:1.6.9-alpine
+
+    container_name: langflow
+    restart: unless-stopped
+
+    ports:
+      - "${LANGFLOW_PORT:-7860}:7860"
+
+    volumes:
+      # Persistent data
+      - langflow_data:/app/data
+      # Logs
+      - ./logs:/app/logs
+
+    environment:
+      # Langflow configuration
+      - LANGFLOW_HOST=0.0.0.0
+      - LANGFLOW_PORT=7860
+      - LANGFLOW_DATABASE_URL=${LANGFLOW_DATABASE_URL:-sqlite:///./data/langflow.db}
+      # Timezone
+      - TZ=${TZ:-UTC}
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7860/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  langflow_data:
+    driver: local

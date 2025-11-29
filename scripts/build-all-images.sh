@@ -18,22 +18,33 @@ for image_dir in images/*; do
     
     image_name=$(basename "$image_dir")
     
-    # Skip if no Dockerfile
-    if [ ! -f "$image_dir/Dockerfile" ]; then
-        echo -e "${RED}Skipping $image_name: No Dockerfile found${NC}"
+    # Check for custom build script
+    if [ -f "$image_dir/scripts/build.sh" ]; then
+        echo -e "${BLUE}Building: $image_name (using custom script)${NC}"
+        if (cd "$image_dir" && ./scripts/build.sh); then
+            echo -e "${GREEN}✓ Successfully built $image_name${NC}"
+        else
+            echo -e "${RED}✗ Failed to build $image_name${NC}"
+            exit 1
+        fi
+        echo ""
+        continue
+    fi
+
+    # Check for standard Dockerfile
+    if [ -f "$image_dir/Dockerfile" ]; then
+        echo -e "${BLUE}Building: $image_name (standard)${NC}"
+        if docker build -t "zylarian/$image_name:local" "$image_dir"; then
+            echo -e "${GREEN}✓ Successfully built $image_name${NC}"
+        else
+            echo -e "${RED}✗ Failed to build $image_name${NC}"
+            exit 1
+        fi
+        echo ""
         continue
     fi
     
-    echo -e "${BLUE}Building: $image_name${NC}"
-    
-    if docker build -t "zylarian/$image_name:local" "$image_dir"; then
-        echo -e "${GREEN}✓ Successfully built $image_name${NC}"
-    else
-        echo -e "${RED}✗ Failed to build $image_name${NC}"
-        exit 1
-    fi
-    
-    echo ""
+    echo -e "${RED}Skipping $image_name: No Dockerfile or build script found${NC}"
 done
 
 echo -e "${GREEN}✓ All images built successfully${NC}"

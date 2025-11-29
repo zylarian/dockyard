@@ -39,6 +39,38 @@ build-all-images: ## Build all images
 	@echo "$(BLUE)Building all images...$(NC)"
 	@./scripts/build-all-images.sh
 
+# Publish all images (builds and pushes to Docker Hub)
+publish-all: ## Build and publish all images + update docs
+	@echo "🚀 Publishing all images..."
+	@for dir in images/*; do \
+		if [ -f "$$dir/scripts/publish.sh" ]; then \
+			echo "📦 Publishing $$(basename $$dir)..."; \
+			(cd $$dir && ./scripts/publish.sh) || exit 1; \
+		fi \
+	done
+	@$(MAKE) update-hub-docs
+	@echo "✅ All images published!"
+
+# Update Docker Hub documentation (README.md)
+update-hub-docs: ## Sync README.md to Docker Hub
+	@echo "📝 Updating Docker Hub documentation..."
+	@if ! docker pushrm --version > /dev/null 2>&1; then \
+		echo "⚠️  docker-pushrm not found. Running setup..."; \
+		./scripts/setup-pushrm.sh; \
+	fi
+	@for dir in images/*; do \
+		if [ -f "$$dir/README.md" ]; then \
+			IMAGE_NAME="zylarian/dockyard-$$(basename $$dir)"; \
+			echo "📄 Updating docs for $$IMAGE_NAME..."; \
+			docker pushrm $$IMAGE_NAME -f $$dir/README.md -s "Zylarian Dockyard - $$(basename $$dir)" || echo "⚠️  Failed to update docs for $$IMAGE_NAME (repo might not exist)"; \
+		fi \
+	done
+	@echo "✅ Docker Hub docs updated!"
+
+# Setup docker-pushrm
+setup-pushrm: ## Install docker-pushrm plugin
+	@./scripts/setup-pushrm.sh
+
 test: ## Run tests
 	@echo "$(BLUE)Running tests...$(NC)"
 	@./scripts/test.sh

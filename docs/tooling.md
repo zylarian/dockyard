@@ -34,31 +34,7 @@ make test-stack STACK=databases/postgresql
 
 ## 🛠️ Tools Overview
 
-### GitHub Actions Workflows
-
-#### 1. Validate Dockerfiles (`.github/workflows/validate-dockerfiles.yml`)
-- **Triggers**: PRs and pushes affecting `images/`
-- **Actions**:
-  - Lints Dockerfiles with hadolint
-  - Tests multi-arch builds (amd64, arm64)
-- **Usage**: Automatic on PR/push
-
-#### 2. Validate Stacks (`.github/workflows/validate-stacks.yml`)
-- **Triggers**: PRs and pushes affecting `stacks/`
-- **Actions**:
-  - Validates docker-compose.yml files
-  - Checks stack structure (required files)
-  - Runs shellcheck on scripts
-- **Usage**: Automatic on PR/push
-
-#### 3. Build and Publish Images (`.github/workflows/publish-images.yml`)
-- **Triggers**: Push to main, releases, manual
-- **Actions**:
-  - Builds multi-arch Docker images
-  - Publishes to GitHub Container Registry
-  - Publishes to Docker Hub (if configured)
-- **Configuration**:
-  - Set `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` secrets for Docker Hub publishing
+## 🛠️ Tools Overview
 
 ### Makefile Commands
 
@@ -125,7 +101,6 @@ Hadolint configuration for Dockerfile linting:
 ### `renovate.json`
 Renovate bot configuration for dependency updates:
 - Automatic Docker image updates
-- GitHub Actions version updates
 - Scheduled weekly updates
 - Auto-merge for minor/patch updates
 
@@ -141,7 +116,7 @@ Renovate bot configuration for dependency updates:
    make validate-dockerfiles
    ```
 4. Commit and push
-5. GitHub Actions will validate and build
+5. **Manual Step**: Run build and publish scripts if ready to release.
 
 ### Adding a New Stack
 
@@ -153,7 +128,7 @@ Renovate bot configuration for dependency updates:
    make validate-stacks
    ```
 4. Commit and push
-5. GitHub Actions will validate
+5. **Manual Step**: Ensure stack documentation is up to date.
 
 ### Pre-commit Checks
 
@@ -167,14 +142,9 @@ This runs all validators and linters.
 
 ## 🚢 Publishing Images
 
-### Automatic Publishing
-
-Images are automatically built and published when:
-- Code is pushed to `main` branch
-- A release is created
-- Manual workflow dispatch
-
 ### Manual Publishing
+
+Images are published manually using the provided scripts.
 
 ```bash
 # Build locally
@@ -184,9 +154,13 @@ docker build -t zylarian/myimage:latest images/myimage/
 docker push zylarian/myimage:latest
 ```
 
-For multi-arch:
+For multi-arch (recommended):
 
 ```bash
+# Use the publish script if available
+./images/langflow/scripts/publish.sh
+
+# Or manually with buildx
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t zylarian/myimage:latest \
@@ -194,15 +168,7 @@ docker buildx build \
   images/myimage/
 ```
 
-## 🔐 Required Secrets
 
-For full CI/CD functionality, set these GitHub secrets:
-
-| Secret | Description | Required |
-|--------|-------------|----------|
-| `GITHUB_TOKEN` | Automatic, for GHCR | ✅ Auto |
-| `DOCKERHUB_USERNAME` | Docker Hub username | Optional |
-| `DOCKERHUB_TOKEN` | Docker Hub access token | Optional |
 
 ## 🐛 Troubleshooting
 
