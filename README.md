@@ -50,4 +50,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-Made with ❤️ by the Zylarian community
+Made with ❤️ by the Zylarian Innovations LLC
