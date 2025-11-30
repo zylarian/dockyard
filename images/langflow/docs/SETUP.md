@@ -5,8 +5,7 @@
 ```
 images/langflow/
 ├── build/                      # Dockerfiles
-│   ├── Dockerfile.debian      # Debian variant
-│   └── Dockerfile.alpine      # Alpine variant
+│   └── Dockerfile.debian      # Debian variant
 ├── scripts/                    # Build & publish scripts
 │   ├── build.sh              # Multi-arch build
 │   └── publish.sh            # Multi-arch publish
@@ -31,8 +30,7 @@ images/langflow/
 
 | Tag | Variant | Architectures |
 |-----|---------|---------------|
-| `1.6.9`, `latest` | Debian | amd64, arm64, arm/v7 |
-| `1.6.9-alpine`, `alpine` | Alpine | amd64, arm64, arm/v7 |
+| `1.6.9`, `latest` | Debian | amd64, arm64 |
 
 ## �� Build Process
 
@@ -51,8 +49,7 @@ cd images/langflow
 This will:
 1. Create/use multiarch buildx builder
 2. Build Debian variant for all platforms
-3. Build Alpine variant for all platforms
-4. Tag appropriately
+3. Tag appropriately
 
 ### Publish to Docker Hub
 
@@ -70,15 +67,13 @@ docker login -u zylarian
 
 **Examples:**
 - `zylarian/dockyard-langflow:1.6.9`
-- `zylarian/dockyard-langflow:1.6.9-alpine`
 - `zylarian/dockyard-langflow:latest`
 
 ## 📊 Size Comparison
 
-| Variant | amd64 | arm64 | arm/v7 |
-|---------|-------|-------|--------|
-| Debian | ~800MB | ~780MB | ~750MB |
-| Alpine | ~400MB | ~380MB | ~360MB |
+| Variant | amd64 | arm64 |
+|---------|-------|-------|
+| Debian | ~800MB | ~780MB |
 
 ## 🔄 Version Updates
 
@@ -86,7 +81,6 @@ To update to a new Langflow version:
 
 1. Update `LANGFLOW_VERSION` in:
    - `build/Dockerfile.debian`
-   - `build/Dockerfile.alpine`
    - `scripts/build.sh`
    - `scripts/publish.sh`
    - `README.md`

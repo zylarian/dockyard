@@ -9,7 +9,6 @@ Detailed instructions for running and configuring Langflow images.
 | Variant | Tag | Base Image | Size | Use Case |
 |---------|-----|------------|------|----------|
 | **Debian** | `1.6.9`, `latest` | python:3.12-slim | ~800MB | Full-featured, recommended |
-| **Alpine** | `1.6.9-alpine`, `alpine` | python:3.12-alpine | ~400MB | Minimal, production |
 
 ## 🎯 About Langflow
 
@@ -34,17 +33,12 @@ Langflow is a visual framework for building multi-agent and RAG applications. It
 docker pull zylarian/langflow:1.6.9
 # or
 docker pull zylarian/langflow:latest
-
-# Alpine variant (minimal, smaller size)
-docker pull zylarian/langflow:1.6.9-alpine
-# or
-docker pull zylarian/langflow:alpine
 ```
 
-### Using Docker (Debian)
+### Using Docker
 
 ```bash
-# Run Langflow with Debian variant
+# Run Langflow
 docker run -d \
   -p 7860:7860 \
   -v langflow_data:/app/data \
@@ -52,32 +46,16 @@ docker run -d \
   zylarian/langflow:1.6.9
 ```
 
-### Using Docker (Alpine)
-
-```bash
-# Run Langflow with Alpine variant
-docker run -d \
-  -p 7860:7860 \
-  -v langflow_data:/app/data \
-  --name langflow \
-  zylarian/langflow:1.6.9-alpine
-```
-
 ### Using Docker Compose
 
-Choose your preferred variant in `docker-compose.yml`:
+Example `docker-compose.yml`:
 
 ```yaml
 version: '3.8'
 
 services:
   langflow:
-    # Option 1: Debian variant (default, recommended)
     image: zylarian/langflow:1.6.9
-    
-    # Option 2: Alpine variant (smaller)
-    # image: zylarian/langflow:1.6.9-alpine
-    
     ports:
       - "7860:7860"
     volumes:
@@ -109,11 +87,11 @@ Access Langflow at: `http://localhost:7860`
 
 ## 🏗️ Building Locally
 
-### Quick Build (both variants)
+### Quick Build
 
 ```bash
 cd images/langflow
-./build.sh
+./scripts/build.sh
 ```
 
 ### Manual Build
@@ -123,14 +101,7 @@ cd images/langflow
 docker build \
   --build-arg LANGFLOW_VERSION=1.6.9 \
   -t zylarian/langflow:1.6.9 \
-  -f Dockerfile \
-  .
-
-# Build Alpine variant
-docker build \
-  --build-arg LANGFLOW_VERSION=1.6.9 \
-  -t zylarian/langflow:1.6.9-alpine \
-  -f Dockerfile.alpine \
+  -f build/Dockerfile.debian \
   .
 ```
 

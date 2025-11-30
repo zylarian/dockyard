@@ -24,19 +24,11 @@ Each image version creates multiple tags to support different use cases:
 | `latest` | Latest version, Debian | `latest` |
 | `latest-debian` | Latest version, Debian explicit | `latest-debian` |
 
-### Alpine Variant
-
-| Tag | Description | Example |
-|-----|-------------|---------|
-| `{VERSION}-alpine` | Specific version, Alpine | `1.6.9-alpine` |
-| `latest-alpine` | Latest version, Alpine | `latest-alpine` |
-
 ### Architecture Support
 
 All tags are **multi-architecture manifests** supporting:
 - `linux/amd64` (x86-64)
 - `linux/arm64` (ARM 64-bit)
-- `linux/arm/v7` (ARM 32-bit)
 
 Docker automatically pulls the correct architecture for your system.
 
@@ -63,17 +55,13 @@ This script:
 
 Builds:
 - Debian variant with tags: `{VERSION}`, `{VERSION}-debian`, `latest`, `latest-debian`
-- Alpine variant with tags: `{VERSION}-alpine`, `latest-alpine`
-- All multi-arch (amd64, arm64, arm/v7)
+- All multi-arch (amd64, arm64)
 
 ### 3. Test Locally
 
 ```bash
 # Test Debian
 docker run --rm zylarian/dockyard-langflow:latest langflow --version
-
-# Test Alpine
-docker run --rm zylarian/dockyard-langflow:latest-alpine langflow --version
 
 # Test specific architecture
 docker run --rm --platform linux/arm64 zylarian/dockyard-langflow:latest langflow --version
@@ -102,10 +90,8 @@ After building version `1.6.9`, these tags exist:
 ```
 zylarian/dockyard-langflow:1.6.9              <- Debian, multi-arch
 zylarian/dockyard-langflow:1.6.9-debian       <- Debian, multi-arch
-zylarian/dockyard-langflow:1.6.9-alpine       <- Alpine, multi-arch
 zylarian/dockyard-langflow:latest             <- Latest Debian, multi-arch
 zylarian/dockyard-langflow:latest-debian      <- Latest Debian, multi-arch
-zylarian/dockyard-langflow:latest-alpine      <- Latest Alpine, multi-arch
 ```
 
 ## 🎯 Usage Recommendations
@@ -124,22 +110,6 @@ services:
 services:
   langflow:
     image: zylarian/dockyard-langflow:latest
-```
-
-### Minimal Size
-
-```yaml
-services:
-  langflow:
-    image: zylarian/dockyard-langflow:1.6.9-alpine
-```
-
-### ARM Devices (Raspberry Pi)
-
-```yaml
-services:
-  langflow:
-    image: zylarian/dockyard-langflow:1.6.9-alpine  # Automatically uses arm64 or arm/v7
 ```
 
 ## 🤖 Automation

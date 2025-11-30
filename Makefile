@@ -64,6 +64,8 @@ update-hub-docs: ## Sync README.md to Docker Hub
 			echo "📄 Updating docs for $$IMAGE_NAME..."; \
 			if [ "$$(basename $$dir)" = "langflow" ]; then \
 				docker pushrm $$IMAGE_NAME -f $$dir/README.md --short "Production-ready Langflow - Visual AI workflow builder powered by LangChain" || echo "⚠️  Failed to update docs for $$IMAGE_NAME"; \
+			elif [ "$$(basename $$dir)" = "n8n" ]; then \
+				docker pushrm $$IMAGE_NAME -f $$dir/README.md --short "Production-ready n8n - Powerful workflow automation tool for technical teams" || echo "⚠️  Failed to update docs for $$IMAGE_NAME"; \
 			else \
 				docker pushrm $$IMAGE_NAME -f $$dir/README.md || echo "⚠️  Failed to update docs for $$IMAGE_NAME"; \
 			fi \
