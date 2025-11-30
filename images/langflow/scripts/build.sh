@@ -43,10 +43,11 @@ fi
 
 echo ""
 
-# Build Debian variant
-echo -e "${BLUE}📦 Building Debian variant (multi-arch)...${NC}"
+# Build Debian variant (local architecture only for faster builds)
+echo -e "${BLUE}📦 Building Debian variant (${PLATFORMS})...${NC}"
+echo -e "${YELLOW}Note: Building for local architecture only. Multi-arch build happens during publish.${NC}"
 docker buildx build \
-  --platform ${PLATFORMS} \
+  --platform linux/amd64 \
   --build-arg LANGFLOW_VERSION=${LANGFLOW_VERSION} \
   --tag ${IMAGE_NAME}:${LANGFLOW_VERSION} \
   --tag ${IMAGE_NAME}:${LANGFLOW_VERSION}-debian \
@@ -59,8 +60,9 @@ docker buildx build \
 echo -e "${GREEN}✅ Debian variant built${NC}"
 echo ""
 
-# Build Alpine variant (DISABLED - faiss-cpu dependency conflict)
-# echo -e "${BLUE}🏔️  Building Alpine variant (multi-arch)...${NC}"
+# Build Alpine variant (DISABLED - incompatible with Langflow dependencies)
+# Alpine/musllinux lacks wheels for: faiss-cpu, onnxruntime, and other ML packages
+# echo -e "${BLUE}🏔️  Building Alpine variant...${NC}"
 # docker buildx build \
 #   --platform ${PLATFORMS} \
 #   --build-arg LANGFLOW_VERSION=${LANGFLOW_VERSION} \
@@ -71,22 +73,19 @@ echo ""
 #   ${CURRENT_DIR}
 
 # echo -e "${GREEN}✅ Alpine variant built${NC}"
-echo -e "${YELLOW}⚠️  Alpine variant skipped (dependency conflicts)${NC}"
+echo -e "${YELLOW}⚠️  Alpine variant skipped (incompatible with Langflow dependencies)${NC}"
 echo ""
 
-echo -e "${GREEN}🎉 All variants built successfully!${NC}"
+echo -e "${GREEN}🎉 Build completed!${NC}"
 echo ""
-echo "Built tags:"
+echo "Built tags (local architecture):"
 echo -e "${BLUE}Debian:${NC}"
 echo "  • ${IMAGE_NAME}:${LANGFLOW_VERSION}"
 echo "  • ${IMAGE_NAME}:${LANGFLOW_VERSION}-debian"
 echo "  • ${IMAGE_NAME}:latest"
 echo "  • ${IMAGE_NAME}:latest-debian"
 echo ""
-echo -e "${BLUE}Alpine:${NC}"
-echo "  • ${IMAGE_NAME}:${LANGFLOW_VERSION}-alpine"
-echo "  • ${IMAGE_NAME}:latest-alpine"
+echo "Local architecture: linux/amd64"
+echo "Multi-arch build (${PLATFORMS}) happens during publish."
 echo ""
-echo "Architectures: amd64, arm64, arm/v7"
-echo ""
-echo "To publish, run: ./scripts/publish.sh"
+echo "To publish multi-arch images, run: ./scripts/publish.sh"

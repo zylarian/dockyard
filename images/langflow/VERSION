@@ -7,11 +7,11 @@ LANGFLOW_VERSION=1.6.9
 # Release date
 RELEASE_DATE=2024-11-25
 
-# Supported variants
-VARIANTS="debian alpine"
+# Supported variants (Alpine incompatible - missing musllinux wheels for faiss-cpu, onnxruntime)
+VARIANTS="debian"
 
 # Supported architectures
-ARCHITECTURES="linux/amd64,linux/arm64,linux/arm/v7"
+ARCHITECTURES="linux/amd64,linux/arm64"
 
 # Image name
 IMAGE_NAME=zylarian/dockyard-langflow

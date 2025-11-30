@@ -1,6 +1,6 @@
 #!/bin/bash
-# Multi-architecture publish script for Langflow
-# Reads version from VERSION file and publishes all variants with proper tags
+# Publish script for Langflow
+# Builds multi-architecture images and pushes to Docker Hub
 
 set -e
 
@@ -41,8 +41,8 @@ else
     docker buildx use multiarch
 fi
 
-# Build and push Debian variant
-echo -e "${BLUE}📤 Building and pushing Debian variant (multi-arch)...${NC}"
+# Build and push Debian variant (multi-arch)
+echo -e "${BLUE}📤 Building and pushing Debian variant for ${PLATFORMS}...${NC}"
 docker buildx build \
   --platform ${PLATFORMS} \
   --build-arg LANGFLOW_VERSION=${LANGFLOW_VERSION} \
@@ -55,25 +55,21 @@ docker buildx build \
   ${CURRENT_DIR}
 
 echo -e "${GREEN}✅ Debian variant pushed${NC}"
+
 echo ""
 
-# Build and push Alpine variant
-echo -e "${BLUE}📤 Building and pushing Alpine variant (multi-arch)...${NC}"
-docker buildx build \
-  --platform ${PLATFORMS} \
-  --build-arg LANGFLOW_VERSION=${LANGFLOW_VERSION} \
-  --tag ${IMAGE_NAME}:${LANGFLOW_VERSION}-alpine \
-  --tag ${IMAGE_NAME}:latest-alpine \
-  --file build/Dockerfile.alpine \
-  --push \
-  ${CURRENT_DIR}
+# Sync README to Docker Hub
+echo -e "${BLUE}📝 Syncing README to Docker Hub...${NC}"
+if docker pushrm ${IMAGE_NAME} -f ${CURRENT_DIR}/README.md --short "Langflow ${LANGFLOW_VERSION} - Production-ready Docker image for LangChain UI"; then
+    echo -e "${GREEN}✅ README synced to Docker Hub${NC}"
+else
+    echo -e "${YELLOW}⚠️  Failed to sync README (not critical)${NC}"
+fi
 
-echo -e "${GREEN}✅ Alpine variant pushed${NC}"
 echo ""
-
 echo -e "${GREEN}🎉 All images published successfully!${NC}"
 echo ""
-echo "Published tags (multi-arch: amd64, arm64, arm/v7):"
+echo "Published tags (multi-arch: ${PLATFORMS}):"
 echo ""
 echo -e "${BLUE}Debian:${NC}"
 echo "  • ${IMAGE_NAME}:${LANGFLOW_VERSION}"
@@ -81,8 +77,7 @@ echo "  • ${IMAGE_NAME}:${LANGFLOW_VERSION}-debian"
 echo "  • ${IMAGE_NAME}:latest"
 echo "  • ${IMAGE_NAME}:latest-debian"
 echo ""
-echo -e "${BLUE}Alpine:${NC}"
-echo "  • ${IMAGE_NAME}:${LANGFLOW_VERSION}-alpine"
-echo "  • ${IMAGE_NAME}:latest-alpine"
-echo ""
 echo -e "${BLUE}View at: https://hub.docker.com/r/zylarian/dockyard-langflow${NC}"
+echo ""
+echo -e "${YELLOW}Note: Category and icon must be set manually in Docker Hub web interface${NC}"
+

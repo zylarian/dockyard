@@ -39,11 +39,12 @@ RUN addgroup -g 1000 langflow && \
 # Set working directory
 WORKDIR /app
 
-# Upgrade pip and install Langflow with compatible dependencies
+# Upgrade pip and install Langflow (faiss-cpu will fail on Alpine, but that's OK)
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir "faiss-cpu>=1.11.0" && \
-    pip install --no-cache-dir --no-deps langflow==${LANGFLOW_VERSION} && \
-    pip install --no-cache-dir --use-deprecated=legacy-resolver langflow==${LANGFLOW_VERSION}
+    pip install --no-cache-dir --use-deprecated=legacy-resolver langflow==${LANGFLOW_VERSION} || \
+    (pip install --no-cache-dir --no-deps langflow==${LANGFLOW_VERSION} && \
+    pip install --no-cache-dir --use-deprecated=legacy-resolver \
+    $(pip show langflow | grep -E '^Requires:' | sed 's/Requires: //' | tr ',' '\n' | grep -v 'faiss-cpu' | tr '\n' ' '))
 
 # Create directories and set permissions
 RUN mkdir -p /app/data /app/logs && \
