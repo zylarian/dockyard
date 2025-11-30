@@ -4,6 +4,8 @@ Production-ready Docker image for [Langflow](https://github.com/logspace-ai/lang
 
 **Version:** 1.6.9 | **Architectures:** amd64, arm64
 
+*Maintained by [Zylarian Innovations LLC](https://github.com/zylarian)*
+
 ## 🚀 Quick Start
 
 ```bash
