@@ -37,13 +37,14 @@ mkdir -p "$PLUGIN_DIR"
 # Download
 if curl -L -o "$PLUGIN_PATH" "$URL"; then
     chmod +x "$PLUGIN_PATH"
-    echo -e "${GREEN}✅ docker-pushrm installed to $PLUGIN_PATH${NC}"
+    echo -e "${GREEN}✅ docker-pushrm installed to ${PLUGIN_PATH}${NC}"
     
-    # Verify
-    if docker pushrm --version > /dev/null 2>&1; then
-        echo -e "${GREEN}✓ Verification successful: $(docker pushrm --version)${NC}"
+    # Verify installation
+    if docker pushrm --help > /dev/null 2>&1; then
+        echo -e "${GREEN}✅ docker-pushrm is ready to use${NC}"
     else
-        echo -e "${RED}⚠️  Verification failed. Is the plugin executable?${NC}"
+        echo -e "${YELLOW}⚠️  Verification failed. Is the plugin executable?${NC}"
+        echo "Try running: chmod +x ${PLUGIN_PATH}"
     fi
 else
     echo -e "${RED}❌ Download failed${NC}"

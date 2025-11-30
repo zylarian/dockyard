@@ -62,7 +62,11 @@ update-hub-docs: ## Sync README.md to Docker Hub
 		if [ -f "$$dir/README.md" ]; then \
 			IMAGE_NAME="zylarian/dockyard-$$(basename $$dir)"; \
 			echo "📄 Updating docs for $$IMAGE_NAME..."; \
-			docker pushrm $$IMAGE_NAME -f $$dir/README.md -s "Zylarian Dockyard - $$(basename $$dir)" || echo "⚠️  Failed to update docs for $$IMAGE_NAME (repo might not exist)"; \
+			if [ "$$(basename $$dir)" = "langflow" ]; then \
+				docker pushrm $$IMAGE_NAME -f $$dir/README.md --short "Production-ready Langflow - Visual AI workflow builder powered by LangChain" || echo "⚠️  Failed to update docs for $$IMAGE_NAME"; \
+			else \
+				docker pushrm $$IMAGE_NAME -f $$dir/README.md || echo "⚠️  Failed to update docs for $$IMAGE_NAME"; \
+			fi \
 		fi \
 	done
 	@echo "✅ Docker Hub docs updated!"

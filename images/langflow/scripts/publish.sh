@@ -60,7 +60,7 @@ echo ""
 
 # Sync README to Docker Hub
 echo -e "${BLUE}📝 Syncing README to Docker Hub...${NC}"
-if docker pushrm ${IMAGE_NAME} -f ${CURRENT_DIR}/README.md --short "Langflow ${LANGFLOW_VERSION} - Production-ready Docker image for LangChain UI"; then
+if docker pushrm ${IMAGE_NAME} -f ${CURRENT_DIR}/README.md --short "Production-ready Langflow - Visual AI workflow builder powered by LangChain"; then
     echo -e "${GREEN}✅ README synced to Docker Hub${NC}"
 else
     echo -e "${YELLOW}⚠️  Failed to sync README (not critical)${NC}"
