@@ -10,7 +10,7 @@ VERSION_FILE="${CURRENT_DIR}/VERSION"
 # Source VERSION file
 source "$VERSION_FILE"
 
-PLATFORMS="linux/amd64,linux/arm64"
+PLATFORMS="linux/amd64"
 
 # Colors
 BLUE='\033[0;34m'
@@ -59,18 +59,19 @@ docker buildx build \
 echo -e "${GREEN}✅ Debian variant built${NC}"
 echo ""
 
-# Build Alpine variant
-echo -e "${BLUE}🏔️  Building Alpine variant (multi-arch)...${NC}"
-docker buildx build \
-  --platform ${PLATFORMS} \
-  --build-arg LANGFLOW_VERSION=${LANGFLOW_VERSION} \
-  --tag ${IMAGE_NAME}:${LANGFLOW_VERSION}-alpine \
-  --tag ${IMAGE_NAME}:latest-alpine \
-  --file build/Dockerfile.alpine \
-  --load \
-  ${CURRENT_DIR}
+# Build Alpine variant (DISABLED - faiss-cpu dependency conflict)
+# echo -e "${BLUE}🏔️  Building Alpine variant (multi-arch)...${NC}"
+# docker buildx build \
+#   --platform ${PLATFORMS} \
+#   --build-arg LANGFLOW_VERSION=${LANGFLOW_VERSION} \
+#   --tag ${IMAGE_NAME}:${LANGFLOW_VERSION}-alpine \
+#   --tag ${IMAGE_NAME}:latest-alpine \
+#   --file build/Dockerfile.alpine \
+#   --load \
+#   ${CURRENT_DIR}
 
-echo -e "${GREEN}✅ Alpine variant built${NC}"
+# echo -e "${GREEN}✅ Alpine variant built${NC}"
+echo -e "${YELLOW}⚠️  Alpine variant skipped (dependency conflicts)${NC}"
 echo ""
 
 echo -e "${GREEN}🎉 All variants built successfully!${NC}"

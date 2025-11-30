@@ -38,10 +38,11 @@ RUN groupadd -r langflow -g 1000 && \
 # Set working directory
 WORKDIR /app
 
-# Install Langflow
-RUN pip install --no-cache-dir \
-    langflow==${LANGFLOW_VERSION} \
-    && pip cache purge
+# Upgrade pip and install compatible faiss-cpu first
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir "faiss-cpu>=1.11.0" && \
+    pip install --no-cache-dir --use-deprecated=legacy-resolver \
+    langflow==${LANGFLOW_VERSION}
 
 # Create directories and set permissions
 RUN mkdir -p /app/data /app/logs && \
