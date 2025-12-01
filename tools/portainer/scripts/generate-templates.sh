@@ -162,6 +162,7 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
       "logo": "$LOGO",
       "image": "$IMAGE_NAME:latest",
       "name": "$image_name",
+      "user": "root",
       "ports": ["$PORT:$PORT/tcp"],
       "volumes": [
         {
