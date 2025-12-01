@@ -1,0 +1,23 @@
+# Code Server Image Version Configuration
+# This file controls which version of Code Server to build
+
+# Current Code Server version
+CODE_SERVER_VERSION=4.106.2
+
+# Release date
+RELEASE_DATE=2024-12-01
+
+# Supported variants
+VARIANTS="debian"
+
+# Supported architectures
+ARCHITECTURES="linux/amd64,linux/arm64"
+
+# Image name
+IMAGE_NAME=zylarian/dockyard-code-server
+
+# Tag strategy:
+# - {VERSION}                    -> Debian multi-arch (4.106.2)
+# - {VERSION}-debian             -> Debian multi-arch (4.106.2-debian)
+# - latest                       -> Latest Debian multi-arch
+# - latest-debian                -> Latest Debian multi-arch

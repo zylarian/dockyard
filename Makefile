@@ -42,7 +42,7 @@ build-all-images: ## Build all images
 # Publish all images (builds and pushes to Docker Hub)
 publish-all: ## Build and publish all images + update docs
 	@echo "🚀 Publishing all images..."
-	@for dir in images/*; do \
+	@for dir in $$(find images -mindepth 2 -maxdepth 2 -type d | sort); do \
 		if [ -f "$$dir/scripts/publish.sh" ]; then \
 			echo "📦 Publishing $$(basename $$dir)..."; \
 			(cd $$dir && ./scripts/publish.sh) || exit 1; \
@@ -58,7 +58,7 @@ update-hub-docs: ## Sync README.md to Docker Hub
 		echo "⚠️  docker-pushrm not found. Running setup..."; \
 		./scripts/setup-pushrm.sh; \
 	fi
-	@for dir in images/*; do \
+	@for dir in $$(find images -mindepth 2 -maxdepth 2 -type d | sort); do \
 		if [ -f "$$dir/README.md" ]; then \
 			IMAGE_NAME="zylarian/dockyard-$$(basename $$dir)"; \
 			echo "📄 Updating docs for $$IMAGE_NAME..."; \

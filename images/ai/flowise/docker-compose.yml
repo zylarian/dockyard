@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  flowise:
+    # Use Debian variant (recommended, multi-arch)
+    image: zylarian/dockyard-flowise:2.1.3
+
+    container_name: flowise
+    restart: unless-stopped
+
+    ports:
+      - "${PORT:-3000}:3000"
+
+    volumes:
+      # Persistent data
+      - flowise_data:/app/data
+      # Logs
+      - ./logs:/app/data/logs
+
+    environment:
+      # Flowise configuration
+      - PORT=3000
+      - FLOWISE_USERNAME=${FLOWISE_USERNAME:-admin}
+      - FLOWISE_PASSWORD=${FLOWISE_PASSWORD:-admin}
+      - DATABASE_PATH=/app/data
+      - APIKEY_PATH=/app/data
+      - SECRETKEY_PATH=/app/data
+      - LOG_PATH=/app/data/logs
+      - BLOB_STORAGE_PATH=/app/data/storage
+      # Timezone
+      - TZ=${TZ:-UTC}
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/v1/ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  flowise_data:
+    driver: local

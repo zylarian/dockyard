@@ -10,8 +10,8 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}🏗️  Building all images...${NC}"
 echo ""
 
-# Find all image directories
-for image_dir in images/*; do
+# Find all image directories (depth 2: images/category/image)
+find images -mindepth 2 -maxdepth 2 -type d | sort | while read -r image_dir; do
     if [ ! -d "$image_dir" ]; then
         continue
     fi

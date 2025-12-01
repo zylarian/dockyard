@@ -1,0 +1,56 @@
+# syntax=docker/dockerfile:1
+FROM debian:bookworm-slim
+
+ARG CODE_SERVER_VERSION=4.106.2
+ARG TARGETARCH
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    git \
+    sudo \
+    procps \
+    openssh-client \
+    vim \
+    nano \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install code-server
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+    curl -fOL https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb \
+    && dpkg -i code-server_${CODE_SERVER_VERSION}_amd64.deb \
+    && rm code-server_${CODE_SERVER_VERSION}_amd64.deb; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+    curl -fOL https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_arm64.deb \
+    && dpkg -i code-server_${CODE_SERVER_VERSION}_arm64.deb \
+    && rm code-server_${CODE_SERVER_VERSION}_arm64.deb; \
+    else \
+    echo "Unsupported architecture: $TARGETARCH" && exit 1; \
+    fi
+
+# Create user
+RUN useradd -m -u 1000 -s /bin/bash coder \
+    && echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+
+USER coder
+WORKDIR /home/coder
+
+# Create config directory
+RUN mkdir -p /home/coder/.config/code-server
+
+# Set environment
+ENV PASSWORD=coder
+ENV LANG=en_US.UTF-8
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/healthz || exit 1
+
+# Entrypoint
+CMD ["code-server", "--bind-addr", "0.0.0.0:8080", "--auth", "password"]
