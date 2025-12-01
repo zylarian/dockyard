@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
 
     ports:
-      - "${LANGFLOW_PORT:-7860}:7860"
+      - "7860:7860"
 
     volumes:
       # Persistent data

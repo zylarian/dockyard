@@ -1,4 +1,4 @@
-.PHONY: help validate validate-dockerfiles validate-stacks lint build-image test clean
+.PHONY: help validate validate-dockerfiles validate-stacks lint build-image test clean portainer start stop restart logs templates
 
 # Colors for output
 BLUE := \033[0;34m
@@ -105,3 +105,44 @@ setup: ## Install development dependencies
 
 pre-commit: validate lint ## Run pre-commit checks
 	@echo "$(GREEN)All pre-commit checks passed!$(NC)"
+
+# Portainer management
+portainer: ## Manage Portainer (usage: make portainer start|stop|restart|logs|templates)
+	@if [ -z "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
+		echo "$(YELLOW)Usage: make portainer [start|stop|restart|logs|templates]$(NC)"; \
+		echo ""; \
+		echo "$(BLUE)Available commands:$(NC)"; \
+		echo "  $(GREEN)start$(NC)      - Generate templates and start Portainer"; \
+		echo "  $(GREEN)stop$(NC)       - Stop Portainer"; \
+		echo "  $(GREEN)restart$(NC)    - Restart Portainer with updated templates"; \
+		echo "  $(GREEN)logs$(NC)       - View Portainer logs"; \
+		echo "  $(GREEN)templates$(NC)  - Generate templates from images"; \
+		exit 1; \
+	fi
+
+start: ## Internal: Start Portainer
+	@echo "$(BLUE)🔧 Generating Portainer templates...$(NC)"
+	@cd tools/portainer && ./scripts/generate-templates.sh
+	@echo "$(BLUE)🚀 Starting Portainer...$(NC)"
+	@cd tools/portainer && ./start.sh
+
+stop: ## Internal: Stop Portainer
+	@echo "$(BLUE)🛑 Stopping Portainer...$(NC)"
+	@cd tools/portainer && docker compose down
+
+restart: ## Internal: Restart Portainer
+	@echo "$(BLUE)🔧 Generating Portainer templates...$(NC)"
+	@cd tools/portainer && ./scripts/generate-templates.sh
+	@echo "$(BLUE)🔄 Restarting Portainer...$(NC)"
+	@cd tools/portainer && docker compose restart portainer
+	@echo "$(GREEN)✅ Portainer restarted with updated templates$(NC)"
+
+logs: ## Internal: View Portainer logs
+	@cd tools/portainer && docker compose logs -f portainer
+
+templates: ## Internal: Generate templates
+	@echo "$(BLUE)🔧 Generating Portainer templates...$(NC)"
+	@cd tools/portainer && ./scripts/generate-templates.sh
+
+%:
+	@:

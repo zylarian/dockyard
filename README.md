@@ -30,8 +30,29 @@ dockyard/
 │   ├── networking/ # Network tools (Traefik, Nginx Proxy...)
 │   └── storage/    # Storage (MinIO, Seafile, Nextcloud...)
 ├── images/         # Standalone preconfigured Docker images
+│   ├── ai/         # AI/ML tools (Langflow, Flowise, Dify...)
+│   ├── automation/ # Automation tools (n8n...)
+│   └── devtools/   # Development tools (Code Server...)
+├── tools/          # Development and management tools
+│   └── portainer/  # Portainer with custom templates
 └── templates/      # Templates for creating new stacks/images
 ```
+
+## 🛠️ Tools
+
+### Portainer - Container Management UI
+
+Pre-configured Portainer with custom templates for all Zylarian Dockyard images and stacks.
+
+**Quick Start:**
+```bash
+cd tools/portainer
+./start.sh
+```
+
+Access at: http://localhost:9000
+
+See [tools/portainer/README.md](tools/portainer/README.md) for details.
 
 ## 🌟 Philosophy
 
