@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # Frontend
+  dify-web:
+    image: langgenius/dify-web:0.10.1
+    container_name: dify-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - CONSOLE_API_URL=http://localhost:5001
+      - APP_API_URL=http://localhost:5001
+    depends_on:
+      - dify-api
+
+  # Backend API
+  dify-api:
+    image: zylarian/dockyard-dify:latest
+    container_name: dify-api
+    restart: unless-stopped
+    user: root
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=dify
+      - DB_PASSWORD=dify
+      - DB_DATABASE=dify
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - REDIS_USE_SSL=false
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - STORAGE_TYPE=local
+      - STORAGE_LOCAL_PATH=/app/api/storage
+      - APP_WEB_URL=http://localhost:3000
+    volumes:
+      - dify_storage:/app/api/storage
+    depends_on:
+      - db
+      - redis
+
+  # Worker (for background tasks)
+  dify-worker:
+    image: zylarian/dockyard-dify:latest
+    container_name: dify-worker
+    restart: unless-stopped
+    user: root
+    command: poetry run python -m celery -A app.celery worker -P gevent -c 1 --loglevel INFO -Q dataset,generation,mail,ops_trace
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=dify
+      - DB_PASSWORD=dify
+      - DB_DATABASE=dify
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - STORAGE_TYPE=local
+      - STORAGE_LOCAL_PATH=/app/api/storage
+    volumes:
+      - dify_storage:/app/api/storage
+    depends_on:
+      - db
+      - redis
+
+  # Database
+  db:
+    image: postgres:15-alpine
+    container_name: dify-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=dify
+      - POSTGRES_USER=dify
+      - POSTGRES_PASSWORD=dify
+    volumes:
+      - dify_db_data:/var/lib/postgresql/data
+
+  # Cache
+  redis:
+    image: redis:6-alpine
+    container_name: dify-redis
+    restart: unless-stopped
+    volumes:
+      - dify_redis_data:/data
+
+volumes:
+  dify_storage:
+    driver: local
+  dify_db_data:
+    driver: local
+  dify_redis_data:
+    driver: local

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  code-server:
+    image: zylarian/dockyard-code-server:latest
+    container_name: code-server
+    restart: unless-stopped
+    user: root
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - code_server_config:/home/coder/.config/code-server
+      - code_server_projects:/home/coder/projects
+
+    environment:
+      - PASSWORD=${PASSWORD:-coder}
+      - TZ=${TZ:-UTC}
+
+volumes:
+  code_server_config:
+    driver: local
+  code_server_projects:
+    driver: local
