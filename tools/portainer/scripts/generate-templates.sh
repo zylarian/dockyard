@@ -144,6 +144,26 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
                     {"name": "REDIS_HOST", "label": "Redis Host", "default": "redis"}
                 ]'
                 ;;
+            qdrant)
+                TITLE="QDrant"
+                DESC="Vector Database for the next generation of AI applications"
+                CATEGORIES='["AI", "Database", "Vector"]'
+                LOGO="$(get_logo_base64 qdrant)"
+                PORT="6333"
+                VOLUME_PATH="/qdrant/storage"
+                ENV_VARS='[]'
+                ;;
+            chromadb)
+                TITLE="ChromaDB"
+                DESC="The AI-native open-source embedding database"
+                CATEGORIES='["AI", "Database", "Vector"]'
+                LOGO="$(get_logo_base64 chromadb)"
+                PORT="8000"
+                VOLUME_PATH="/chroma/chroma"
+                ENV_VARS='[
+                    {"name": "IS_PERSISTENT", "label": "Persistent", "default": "TRUE"}
+                ]'
+                ;;
             *)
                 echo -e "${YELLOW}⚠️  Skipping $image_name: No template definition${NC}"
                 continue
@@ -217,6 +237,18 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
                 DESC="n8n with PostgreSQL database for production"
                 CATEGORIES='["Automation", "Workflow"]'
                 LOGO="$(get_logo_base64 n8n)"
+                ;;
+            qdrant)
+                TITLE="QDrant Vector DB"
+                DESC="QDrant Vector Database Stack"
+                CATEGORIES='["AI", "Database"]'
+                LOGO="$(get_logo_base64 qdrant)"
+                ;;
+            chromadb)
+                TITLE="ChromaDB Vector DB"
+                DESC="ChromaDB Vector Database Stack"
+                CATEGORIES='["AI", "Database"]'
+                LOGO="$(get_logo_base64 chromadb)"
                 ;;
             *)
                 continue

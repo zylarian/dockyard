@@ -1,0 +1,2 @@
+FROM chromadb/chroma:0.4.24
+LABEL maintainer="Zylarian Innovations LLC"

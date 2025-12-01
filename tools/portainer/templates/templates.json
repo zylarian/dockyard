@@ -100,6 +100,48 @@
 ,
     {
       "type": 1,
+      "title": "ChromaDB",
+      "description": "The AI-native open-source embedding database",
+      "categories": ["AI", "Database", "Vector"],
+      "platform": "linux",
+      "logo": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJ1dWlkLTUyM2YxOWUwLTNkZGEtNDM2Ny1iNGI5LTlkNDA1MDNlYWMzYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmlld0JveD0iMCAwIDcyLjQ1IDQ4LjMiPgo8dGl0bGU+Q2hyb21hIGxvZ28gLSBCcmFuZGxvZ29zLm5ldDwvdGl0bGU+PGRlZnM+PG1hc2sgaWQ9InV1aWQtMzQ1N2Y3MmUtZDkwZS00N2IxLWE0ZGQtNWFiZjQ4OWViYTk4IiB4PSIwIiB5PSIwIiB3aWR0aD0iNzIuNDUiIGhlaWdodD0iNDguMyIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGcgaWQ9InV1aWQtMmU5NjJiMDQtYzMwMC00YTJiLTlkMmYtNjVjN2EzZjBmMWE5Ij48cGF0aCBkPSJNNzIuNDUsMEgwdjQ4LjNoNzIuNDVWMFoiIHN0eWxlPSJmaWxsOiNmZmY7Ii8+PC9nPjwvbWFzaz48L2RlZnM+PGcgc3R5bGU9Im1hc2s6dXJsKCN1dWlkLTM0NTdmNzJlLWQ5MGUtNDdiMS1hNGRkLTVhYmY0ODllYmE5OCk7Ij48cGF0aCBkPSJNMjQuMTUsMEMxMC44MSwwLDAsMTAuODEsMCwyNC4xNXMxMC44MSwyNC4xNSwyNC4xNSwyNC4xNSwyNC4xNS0xMC44MSwyNC4xNS0yNC4xNVMzNy40OSwwLDI0LjE1LDAiIHN0eWxlPSJmaWxsOiMzMjdlZmY7Ii8+PHBhdGggZD0iTTQ4LjMsMGMtMTMuMzQsMC0yNC4xNSwxMC44MS0yNC4xNSwyNC4xNXMxMC44MSwyNC4xNSwyNC4xNSwyNC4xNSwyNC4xNS0xMC44MSwyNC4xNS0yNC4xNVM2MS42NCwwLDQ4LjMsMCIgc3R5bGU9ImZpbGw6I2ZmZGUyZDsiLz48cGF0aCBkPSJNMjQuMTUsMjQuMTVDMjQuMTUsMTAuODEsMzQuOTYsMCw0OC4zLDB2MjQuMTVoLTI0LjE1Wk00OC4zLDI0LjE1YzAsMTMuMzQtMTAuODEsMjQuMTUtMjQuMTUsMjQuMTV2LTI0LjE1aDI0LjE1WiIgc3R5bGU9ImZpbGw6I2ZmNjQ0NjsiLz48L2c+PC9zdmc+",
+      "image": "zylarian/dockyard-chromadb:latest",
+      "name": "chromadb",
+      "user": "root",
+      "ports": ["8000:8000/tcp"],
+      "volumes": [
+        {
+          "container": "/chroma/chroma",
+          "bind": "chromadb_data"
+        }
+      ],
+      "env": [
+                    {"name": "IS_PERSISTENT", "label": "Persistent", "default": "TRUE"}
+                ]
+    }
+,
+    {
+      "type": 1,
+      "title": "QDrant",
+      "description": "Vector Database for the next generation of AI applications",
+      "categories": ["AI", "Database", "Vector"],
+      "platform": "linux",
+      "logo": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FwYV8yIiBkYXRhLW5hbWU9IkNhcGEgMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzQ2LjQyIDQwMCI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogIzllMGQzODsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmaWxsOiAjZGMyNDRjOwogICAgICB9CgogICAgICAuY2xzLTMgewogICAgICAgIGZpbGw6ICNmZjUxNmI7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJWZWN0b3JzIj4KICAgIDxnPgogICAgICA8Zz4KICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTczLjIxIDAgMCAxMDAgMCAzMDAgMTczLjIxIDQwMCAyMzguMTYgMzYyLjUgMjM4LjE2IDI4Ny41IDE3My4yMSAzMjUgNjQuOTYgMjYyLjUgNjQuOTYgMTM3LjUgMTczLjIxIDc1IDI4MS40NiAxMzcuNSAyODEuNDYgMzg3LjUgMzQ2LjQyIDM1MCAzNDYuNDIgMTAwIDE3My4yMSAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjEwOC4yNiAxNjIuNSAxMDguMjYgMjM3LjUgMTczLjIxIDI3NSAyMzguMTYgMjM3LjUgMjM4LjE2IDE2Mi41IDE3My4yMSAxMjUgMTA4LjI2IDE2Mi41Ii8+CiAgICAgIDwvZz4KICAgICAgPGc+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjIzOC4xNiAyODcuNSAyMzguMTYgMzYyLjUgMTczLjIxIDQwMCAxNzMuMjEgMzI1IDIzOC4xNiAyODcuNSIvPgogICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIzNDYuNDIgMTAwIDM0Ni40MiAzNTAgMjgxLjQ2IDM4Ny41IDI4MS40NiAxMzcuNSAzNDYuNDIgMTAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjM0Ni40MiAxMDAgMjgxLjQ2IDEzNy41IDE3My4yMSA3NSA2NC45NiAxMzcuNSAwIDEwMCAxNzMuMjEgMCAzNDYuNDIgMTAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjE3My4yMSAzMjUgMTczLjIxIDQwMCAwIDMwMCAwIDEwMCA2NC45NiAxMzcuNSA2NC45NiAyNjIuNSAxNzMuMjEgMzI1Ii8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjIzOC4xNiAxNjIuNSAxNzMuMjEgMjAwIDEwOC4yNiAxNjIuNSAxNzMuMjEgMTI1IDIzOC4xNiAxNjIuNSIvPgogICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNzMuMjEgMjAwIDE3My4yMSAyNzUgMTA4LjI2IDIzNy41IDEwOC4yNiAxNjIuNSAxNzMuMjEgMjAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjIzOC4xNiAxNjIuNSAyMzguMTYgMjM3LjUgMTczLjIxIDI3NSAxNzMuMjEgMjAwIDIzOC4xNiAxNjIuNSIvPgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=",
+      "image": "zylarian/dockyard-qdrant:latest",
+      "name": "qdrant",
+      "user": "root",
+      "ports": ["6333:6333/tcp"],
+      "volumes": [
+        {
+          "container": "/qdrant/storage",
+          "bind": "qdrant_data"
+        }
+      ],
+      "env": []
+    }
+,
+    {
+      "type": 1,
       "title": "Code Server",
       "description": "VS Code in the browser",
       "categories": ["Development", "IDE", "Tools"],
@@ -144,6 +186,32 @@
       "repository": {
         "url": "https://github.com/zylarian/dockyard",
         "stackfile": "images/ai/langflow/docker-compose.yml"
+      }
+    }
+,
+    {
+      "type": 2,
+      "title": "ChromaDB Vector DB",
+      "description": "ChromaDB Vector Database Stack",
+      "categories": ["AI", "Database"],
+      "platform": "linux",
+      "logo": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJ1dWlkLTUyM2YxOWUwLTNkZGEtNDM2Ny1iNGI5LTlkNDA1MDNlYWMzYSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmlld0JveD0iMCAwIDcyLjQ1IDQ4LjMiPgo8dGl0bGU+Q2hyb21hIGxvZ28gLSBCcmFuZGxvZ29zLm5ldDwvdGl0bGU+PGRlZnM+PG1hc2sgaWQ9InV1aWQtMzQ1N2Y3MmUtZDkwZS00N2IxLWE0ZGQtNWFiZjQ4OWViYTk4IiB4PSIwIiB5PSIwIiB3aWR0aD0iNzIuNDUiIGhlaWdodD0iNDguMyIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PGcgaWQ9InV1aWQtMmU5NjJiMDQtYzMwMC00YTJiLTlkMmYtNjVjN2EzZjBmMWE5Ij48cGF0aCBkPSJNNzIuNDUsMEgwdjQ4LjNoNzIuNDVWMFoiIHN0eWxlPSJmaWxsOiNmZmY7Ii8+PC9nPjwvbWFzaz48L2RlZnM+PGcgc3R5bGU9Im1hc2s6dXJsKCN1dWlkLTM0NTdmNzJlLWQ5MGUtNDdiMS1hNGRkLTVhYmY0ODllYmE5OCk7Ij48cGF0aCBkPSJNMjQuMTUsMEMxMC44MSwwLDAsMTAuODEsMCwyNC4xNXMxMC44MSwyNC4xNSwyNC4xNSwyNC4xNSwyNC4xNS0xMC44MSwyNC4xNS0yNC4xNVMzNy40OSwwLDI0LjE1LDAiIHN0eWxlPSJmaWxsOiMzMjdlZmY7Ii8+PHBhdGggZD0iTTQ4LjMsMGMtMTMuMzQsMC0yNC4xNSwxMC44MS0yNC4xNSwyNC4xNXMxMC44MSwyNC4xNSwyNC4xNSwyNC4xNSwyNC4xNS0xMC44MSwyNC4xNS0yNC4xNVM2MS42NCwwLDQ4LjMsMCIgc3R5bGU9ImZpbGw6I2ZmZGUyZDsiLz48cGF0aCBkPSJNMjQuMTUsMjQuMTVDMjQuMTUsMTAuODEsMzQuOTYsMCw0OC4zLDB2MjQuMTVoLTI0LjE1Wk00OC4zLDI0LjE1YzAsMTMuMzQtMTAuODEsMjQuMTUtMjQuMTUsMjQuMTV2LTI0LjE1aDI0LjE1WiIgc3R5bGU9ImZpbGw6I2ZmNjQ0NjsiLz48L2c+PC9zdmc+",
+      "repository": {
+        "url": "https://github.com/zylarian/dockyard",
+        "stackfile": "images/databases/chromadb/docker-compose.yml"
+      }
+    }
+,
+    {
+      "type": 2,
+      "title": "QDrant Vector DB",
+      "description": "QDrant Vector Database Stack",
+      "categories": ["AI", "Database"],
+      "platform": "linux",
+      "logo": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iQ2FwYV8yIiBkYXRhLW5hbWU9IkNhcGEgMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMzQ2LjQyIDQwMCI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogIzllMGQzODsKICAgICAgfQoKICAgICAgLmNscy0yIHsKICAgICAgICBmaWxsOiAjZGMyNDRjOwogICAgICB9CgogICAgICAuY2xzLTMgewogICAgICAgIGZpbGw6ICNmZjUxNmI7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJWZWN0b3JzIj4KICAgIDxnPgogICAgICA8Zz4KICAgICAgICA8cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iMTczLjIxIDAgMCAxMDAgMCAzMDAgMTczLjIxIDQwMCAyMzguMTYgMzYyLjUgMjM4LjE2IDI4Ny41IDE3My4yMSAzMjUgNjQuOTYgMjYyLjUgNjQuOTYgMTM3LjUgMTczLjIxIDc1IDI4MS40NiAxMzcuNSAyODEuNDYgMzg3LjUgMzQ2LjQyIDM1MCAzNDYuNDIgMTAwIDE3My4yMSAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjEwOC4yNiAxNjIuNSAxMDguMjYgMjM3LjUgMTczLjIxIDI3NSAyMzguMTYgMjM3LjUgMjM4LjE2IDE2Mi41IDE3My4yMSAxMjUgMTA4LjI2IDE2Mi41Ii8+CiAgICAgIDwvZz4KICAgICAgPGc+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjIzOC4xNiAyODcuNSAyMzguMTYgMzYyLjUgMTczLjIxIDQwMCAxNzMuMjEgMzI1IDIzOC4xNiAyODcuNSIvPgogICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSIzNDYuNDIgMTAwIDM0Ni40MiAzNTAgMjgxLjQ2IDM4Ny41IDI4MS40NiAxMzcuNSAzNDYuNDIgMTAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjM0Ni40MiAxMDAgMjgxLjQ2IDEzNy41IDE3My4yMSA3NSA2NC45NiAxMzcuNSAwIDEwMCAxNzMuMjEgMCAzNDYuNDIgMTAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjE3My4yMSAzMjUgMTczLjIxIDQwMCAwIDMwMCAwIDEwMCA2NC45NiAxMzcuNSA2NC45NiAyNjIuNSAxNzMuMjEgMzI1Ii8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0zIiBwb2ludHM9IjIzOC4xNiAxNjIuNSAxNzMuMjEgMjAwIDEwOC4yNiAxNjIuNSAxNzMuMjEgMTI1IDIzOC4xNiAxNjIuNSIvPgogICAgICAgIDxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSIxNzMuMjEgMjAwIDE3My4yMSAyNzUgMTA4LjI2IDIzNy41IDEwOC4yNiAxNjIuNSAxNzMuMjEgMjAwIi8+CiAgICAgICAgPHBvbHlnb24gY2xhc3M9ImNscy0xIiBwb2ludHM9IjIzOC4xNiAxNjIuNSAyMzguMTYgMjM3LjUgMTczLjIxIDI3NSAxNzMuMjEgMjAwIDIzOC4xNiAxNjIuNSIvPgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=",
+      "repository": {
+        "url": "https://github.com/zylarian/dockyard",
+        "stackfile": "images/databases/qdrant/docker-compose.yml"
       }
     }
 
