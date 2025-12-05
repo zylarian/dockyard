@@ -14,7 +14,7 @@ VARIANTS="debian"
 ARCHITECTURES="linux/amd64,linux/arm64"
 
 # Image name
-IMAGE_NAME=zylarian/dockyard-dify-api
+IMAGE_NAME=zylarian/dockyard-dify
 
 # Tag strategy:
 # - {VERSION}                    -> Debian multi-arch (1.10.1)

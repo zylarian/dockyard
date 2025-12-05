@@ -131,17 +131,15 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
                 ]'
                 ;;
             dify)
-                TITLE="Dify API"
-                DESC="Backend API for Dify LLM App Development Platform"
+                TITLE="Dify API (Standalone)"
+                DESC="Dify Backend API only (requires external DB/Redis)"
                 CATEGORIES='["AI", "LLM", "Backend"]'
                 LOGO="$(get_logo_base64 dify)"
                 PORT="5001"
-                VOLUME_PATH="/app/data"
+                VOLUME_PATH="/app/api/storage"
                 ENV_VARS='[
                     {"name": "DB_HOST", "label": "Database Host", "default": "postgres"},
-                    {"name": "DB_USER", "label": "Database User", "default": "dify"},
-                    {"name": "DB_PASSWORD", "label": "Database Password", "default": "dify"},
-                    {"name": "REDIS_HOST", "label": "Redis Host", "default": "redis"}
+                    {"name": "DB_PASSWORD", "label": "Database Password", "default": "dify"}
                 ]'
                 ;;
             qdrant)
@@ -158,7 +156,8 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
                 DESC="The AI-native open-source embedding database"
                 CATEGORIES='["AI", "Database", "Vector"]'
                 LOGO="$(get_logo_base64 chromadb)"
-                PORT="8000"
+                PORT="9100"
+                INTERNAL_PORT="8000"
                 VOLUME_PATH="/chroma/chroma"
                 ENV_VARS='[
                     {"name": "IS_PERSISTENT", "label": "Persistent", "default": "TRUE"}
@@ -183,7 +182,7 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
       "image": "$IMAGE_NAME:latest",
       "name": "$image_name",
       "user": "root",
-      "ports": ["$PORT:$PORT/tcp"],
+      "ports": ["$PORT:${INTERNAL_PORT:-$PORT}/tcp"],
       "volumes": [
         {
           "container": "$VOLUME_PATH",
@@ -238,6 +237,12 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
                 CATEGORIES='["Automation", "Workflow"]'
                 LOGO="$(get_logo_base64 n8n)"
                 ;;
+            dify)
+                TITLE="Dify Full Stack"
+                DESC="Complete Dify Platform (Web, API, Worker, DB, Redis)"
+                CATEGORIES='["AI", "LLM", "Platform"]'
+                LOGO="$(get_logo_base64 dify)"
+                ;;
             qdrant)
                 TITLE="QDrant Vector DB"
                 DESC="QDrant Vector Database Stack"
@@ -259,14 +264,14 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
         add_comma
         cat >> "$OUTPUT_FILE" << EOF
     {
-      "type": 2,
+      "type": 3,
       "title": "$TITLE",
       "description": "$DESC",
       "categories": $CATEGORIES,
       "platform": "linux",
       "logo": "$LOGO",
       "repository": {
-        "url": "https://github.com/zylarian/dockyard",
+        "url": "git://git-server/dockyard",
         "stackfile": "images/$category/$image_name/docker-compose.yml"
       }
     }
@@ -276,9 +281,8 @@ EOF
     done
 done
 
-# Close JSON
-cat >> "$OUTPUT_FILE" << 'EOF'
-
+# Close JSON array and object
+cat >> "$OUTPUT_FILE" << EOF
   ]
 }
 EOF

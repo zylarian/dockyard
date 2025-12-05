@@ -27,11 +27,24 @@ services:
       - portainer_data:/data
       # Docker socket (for managing Docker)
       - /var/run/docker.sock:/var/run/docker.sock
+      # Mount local repo for local stack development
+      - ../../:/repo:ro
 
     environment:
       # Use custom templates from nginx server
       - PORTAINER_TEMPLATES=http://templates-server/templates.json
 
+    networks:
+      - portainer-net
+
+  # Local Git Server (to bypass Portainer's file:// restriction)
+  git-server:
+    image: alpine:latest
+    container_name: git-server
+    restart: unless-stopped
+    command: sh -c "apk add --no-cache git-daemon && cp -r /source/dockyard /repos/ && touch /repos/dockyard/.git/git-daemon-export-ok && git daemon --verbose --export-all --base-path=/repos /repos"
+    volumes:
+      - ../../:/source/dockyard:ro
     networks:
       - portainer-net
 
