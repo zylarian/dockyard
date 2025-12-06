@@ -142,13 +142,11 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		start) \
 			echo "$(BLUE)🚀 Starting $$SERVICE_NAME...$(NC)"; \
 			cd $$SERVICE_DIR && docker compose up -d; \
-			sleep 1; \
+			sleep 2; \
 			PORT=$$(docker ps --filter name=$$SERVICE_NAME --format '{{.Ports}}' | grep -oP '0\.0\.0\.0:\K[0-9]+' | head -1); \
+			echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
 			if [ -n "$$PORT" ]; then \
-				echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
 				echo "$(BLUE)🌐 Listening on: http://localhost:$$PORT$(NC)"; \
-			else \
-				echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
 			fi; \
 			;; \
 		stop) \

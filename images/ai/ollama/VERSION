@@ -1,0 +1,14 @@
+# Ollama Image Version Configuration
+# This service uses the official Ollama image
+
+# Official Ollama version
+OLLAMA_VERSION=latest
+
+# Release date
+RELEASE_DATE=2025-12-05
+
+# Image name
+IMAGE_NAME=zylarian/dockyard-ollama
+
+# Tag strategy:
+# - latest                      -> Latest build (pulls from ollama/ollama:latest)
