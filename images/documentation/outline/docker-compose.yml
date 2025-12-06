@@ -1,0 +1,57 @@
+services:
+  outline:
+    image: outlinewiki/outline:latest
+    container_name: outline
+    restart: unless-stopped
+
+    ports:
+      - "3110:3000"
+
+    environment:
+      - NODE_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-generate-a-secret-key-here}
+      - UTILS_SECRET=${UTILS_SECRET:-generate-another-secret-here}
+      - DATABASE_URL=postgres://outline:outline@postgresql:5432/outline
+      - REDIS_URL=redis://redis:6379
+      - URL=http://localhost:3110
+      - PORT=3000
+      - FILE_STORAGE=local
+      - FILE_STORAGE_LOCAL_ROOT_DIR=/var/lib/outline/data
+      - FILE_STORAGE_UPLOAD_MAX_SIZE=26214400
+      - ENABLE_UPDATES=true
+      - WEB_CONCURRENCY=1
+      - MAXIMUM_IMPORT_SIZE=5120000
+      - TZ=${TZ:-UTC}
+
+    volumes:
+      - outline_data:/var/lib/outline/data
+      - ./logs:/var/log/outline
+
+    depends_on:
+      - postgresql
+      - redis
+
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  outline_data:
+    driver: local
+
+networks:
+  default:
+    name: dockyard
+    external: true

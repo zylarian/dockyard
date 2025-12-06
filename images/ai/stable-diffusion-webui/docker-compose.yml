@@ -1,0 +1,43 @@
+services:
+  stable-diffusion-webui:
+    build:
+      context: ./build
+      dockerfile: Dockerfile.debian
+    image: zylarian/dockyard-stable-diffusion-webui:v1.0.0
+    container_name: stable-diffusion-webui
+    restart: unless-stopped
+
+    ports:
+      - "7860:7860"
+
+    environment:
+      - COMMANDLINE_ARGS=--listen --port 7860 --skip-torch-cuda-test --no-half --precision full --no-download-sd-model
+      - TZ=${TZ:-UTC}
+
+    volumes:
+      # Models
+      - ./models:/app/models
+      # Outputs
+      - ./outputs:/app/outputs
+      # Extensions
+      - ./extensions:/app/extensions
+      # Embeddings
+      - ./embeddings:/app/embeddings
+      # Logs
+      - ./logs:/app/logs
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7860/" ]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 180s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G

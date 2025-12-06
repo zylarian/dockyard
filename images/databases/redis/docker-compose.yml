@@ -1,0 +1,41 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+    ports:
+      - "6379:6379"
+
+    environment:
+      - TZ=${TZ:-UTC}
+
+    volumes:
+      # Redis data
+      - redis_data:/data
+      # Configuration
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+      # Logs
+      - ./logs:/var/log/redis
+
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+volumes:
+  redis_data:
+    driver: local

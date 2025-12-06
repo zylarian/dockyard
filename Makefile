@@ -106,6 +106,27 @@ setup: ## Install development dependencies
 pre-commit: validate lint ## Run pre-commit checks
 	@echo "$(GREEN)All pre-commit checks passed!$(NC)"
 
+# AI Services
+AIServices := ollama comfyui dify flowise langflow open-webui stable-diffusion-webui
+
+# Automation Services
+AutomationServices := n8n
+
+# Analytics Services
+AnalyticsServices := metabase
+
+# Database Services
+DatabaseServices := chromadb qdrant postgresql redis
+
+# Documentation Services
+DocumentationServices := outline
+
+# Monitoring Services
+MonitoringServices := uptime-kuma
+
+# Development Tools
+DevToolsServices := jupyter-lab code-server
+
 # Service management (generic for any service)
 service: ## Manage services (usage: make service <name> <start|stop|restart|logs>)
 	@SERVICE_NAME="$(word 2,$(MAKECMDGOALS))"; \

@@ -1,0 +1,33 @@
+FROM python:3.10-slim-bookworm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    libgl1 \
+    libglib2.0-0 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Clone Stable Diffusion WebUI
+RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /app && \
+    chmod +x /app/webui.sh
+
+# Create necessary directories
+RUN mkdir -p /app/models/Stable-diffusion \
+    /app/outputs \
+    /app/extensions \
+    /app/embeddings
+
+# Expose port
+EXPOSE 7860
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1 \
+    COMMANDLINE_ARGS="--listen --port 7860 --skip-torch-cuda-test --no-half --precision full"
+
+# Run in CPU mode by default
+CMD ["python", "launch.py", "--listen", "--port", "7860", "--skip-torch-cuda-test", "--no-half", "--precision", "full", "--no-download-sd-model"]
