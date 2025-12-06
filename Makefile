@@ -115,13 +115,13 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		echo ""; \
 		echo "$(BLUE)Available services:$(NC)"; \
 		echo "  $(GREEN)AI:$(NC)"; \
-		echo "    - dify, flowise, langflow"; \
+		echo "    - dify, flowise, langflow, ollama, comfyui"; \
 		echo "  $(GREEN)Automation:$(NC)"; \
 		echo "    - n8n"; \
 		echo "  $(GREEN)Databases:$(NC)"; \
 		echo "    - chromadb, qdrant"; \
 		echo "  $(GREEN)DevTools:$(NC)"; \
-		echo "    - code-server"; \
+		echo "    - code-server, jupyter-lab"; \
 		echo ""; \
 		echo "$(BLUE)Available actions:$(NC)"; \
 		echo "  $(GREEN)start$(NC)      - Start the service"; \
@@ -142,7 +142,14 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		start) \
 			echo "$(BLUE)🚀 Starting $$SERVICE_NAME...$(NC)"; \
 			cd $$SERVICE_DIR && docker compose up -d; \
-			echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
+			sleep 1; \
+			PORT=$$(docker ps --filter name=$$SERVICE_NAME --format '{{.Ports}}' | grep -oP '0\.0\.0\.0:\K[0-9]+' | head -1); \
+			if [ -n "$$PORT" ]; then \
+				echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
+				echo "$(BLUE)🌐 Listening on: http://localhost:$$PORT$(NC)"; \
+			else \
+				echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
+			fi; \
 			;; \
 		stop) \
 			echo "$(BLUE)🛑 Stopping $$SERVICE_NAME...$(NC)"; \
@@ -152,7 +159,14 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		restart) \
 			echo "$(BLUE)🔄 Restarting $$SERVICE_NAME...$(NC)"; \
 			cd $$SERVICE_DIR && docker compose restart; \
-			echo "$(GREEN)✅ $$SERVICE_NAME restarted$(NC)"; \
+			sleep 1; \
+			PORT=$$(docker ps --filter name=$$SERVICE_NAME --format '{{.Ports}}' | grep -oP '0\.0\.0\.0:\K[0-9]+' | head -1); \
+			if [ -n "$$PORT" ]; then \
+				echo "$(GREEN)✅ $$SERVICE_NAME restarted$(NC)"; \
+				echo "$(BLUE)🌐 Listening on: http://localhost:$$PORT$(NC)"; \
+			else \
+				echo "$(GREEN)✅ $$SERVICE_NAME restarted$(NC)"; \
+			fi; \
 			;; \
 		logs) \
 			echo "$(BLUE)📋 Viewing logs for $$SERVICE_NAME...$(NC)"; \
@@ -161,7 +175,14 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		up) \
 			echo "$(BLUE)🚀 Starting $$SERVICE_NAME (detached)...$(NC)"; \
 			cd $$SERVICE_DIR && docker compose up -d; \
-			echo "$(GREEN)✅ $$SERVICE_NAME is up$(NC)"; \
+			sleep 1; \
+			PORT=$$(docker ps --filter name=$$SERVICE_NAME --format '{{.Ports}}' | grep -oP '0\.0\.0\.0:\K[0-9]+' | head -1); \
+			if [ -n "$$PORT" ]; then \
+				echo "$(GREEN)✅ $$SERVICE_NAME is up$(NC)"; \
+				echo "$(BLUE)🌐 Listening on: http://localhost:$$PORT$(NC)"; \
+			else \
+				echo "$(GREEN)✅ $$SERVICE_NAME is up$(NC)"; \
+			fi; \
 			;; \
 		down) \
 			echo "$(BLUE)🗑️  Stopping and removing $$SERVICE_NAME containers...$(NC)"; \

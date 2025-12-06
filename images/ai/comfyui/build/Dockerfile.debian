@@ -1,0 +1,73 @@
+# Debian variant - ComfyUI with PyTorch
+FROM python:3.11-slim-bookworm
+
+# Build arguments
+ARG COMFYUI_VERSION=latest
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+LABEL maintainer="Zylarian Innovations LLC <support@zylarian.com>"
+LABEL org.opencontainers.image.source="https://github.com/zylarian/dockyard"
+LABEL org.opencontainers.image.description="ComfyUI - Node-based UI for Stable Diffusion"
+LABEL org.opencontainers.image.vendor="Zylarian Innovations LLC"
+
+# Environment variables
+ENV COMFYUI_VERSION=${COMFYUI_VERSION} \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    COMFYUI_PATH=/app/ComfyUI
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    wget \
+    libgl1 \
+    libglib2.0-0 \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r comfyui -g 1000 && \
+    useradd -r -g comfyui -u 1000 -m -s /bin/bash comfyui
+
+# Set working directory
+WORKDIR /app
+
+# Clone ComfyUI
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git && \
+    chown -R comfyui:comfyui /app/ComfyUI
+
+# Switch to non-root user
+USER comfyui
+
+# Install PyTorch and dependencies
+WORKDIR /app/ComfyUI
+RUN pip install --no-cache-dir --user \
+    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir --user -r requirements.txt
+
+# Create directories for models and outputs
+RUN mkdir -p \
+    models/checkpoints \
+    models/vae \
+    models/loras \
+    models/controlnet \
+    models/clip \
+    models/unet \
+    output \
+    input \
+    custom_nodes
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8188/ || exit 1
+
+# Expose port
+EXPOSE 8188
+
+# Start ComfyUI
+CMD ["python", "main.py", "--listen", "0.0.0.0", "--port", "8188", "--cpu"]

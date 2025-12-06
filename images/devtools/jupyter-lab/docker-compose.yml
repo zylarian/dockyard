@@ -1,0 +1,48 @@
+services:
+  jupyter-lab:
+    # Use local build for testing
+    image: zylarian/dockyard-jupyter-lab:latest-local
+
+    container_name: jupyter-lab
+    restart: unless-stopped
+    user: jupyter
+
+    ports:
+      - "8888:8888"
+
+    volumes:
+      # Persistent notebooks
+      - jupyter_notebooks:/home/jupyter/notebooks
+      # Persistent data
+      - jupyter_data:/home/jupyter/data
+      # Logs
+      - ./logs:/home/jupyter/logs
+
+    environment:
+      # Jupyter configuration
+      - JUPYTER_ENABLE_LAB=${JUPYTER_ENABLE_LAB:-yes}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
+      # Timezone
+      - TZ=${TZ:-UTC}
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/api" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+volumes:
+  jupyter_notebooks:
+    driver: local
+  jupyter_data:
+    driver: local

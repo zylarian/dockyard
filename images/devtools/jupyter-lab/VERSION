@@ -1,0 +1,23 @@
+# Jupyter Lab Image Version Configuration
+# This file controls which version of Jupyter Lab to build
+
+# Current Jupyter Lab version
+JUPYTER_VERSION=4.3.4
+
+# Release date
+RELEASE_DATE=2025-12-05
+
+# Supported variants
+VARIANTS="debian"
+
+# Supported architectures
+ARCHITECTURES="linux/amd64,linux/arm64"
+
+# Image name
+IMAGE_NAME=zylarian/dockyard-jupyter-lab
+
+# Tag strategy:
+# - {VERSION}                    -> Debian multi-arch (4.3.4)
+# - {VERSION}-debian            -> Debian multi-arch (4.3.4-debian)
+# - latest                      -> Latest Debian multi-arch
+# - latest-debian               -> Latest Debian multi-arch

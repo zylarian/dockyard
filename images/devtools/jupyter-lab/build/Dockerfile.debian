@@ -1,0 +1,82 @@
+# Debian variant - Full-featured Jupyter Lab
+FROM python:3.12-slim-bookworm
+
+# Build arguments
+ARG JUPYTER_VERSION=4.3.4
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+LABEL maintainer="Zylarian Innovations LLC <support@zylarian.com>"
+LABEL org.opencontainers.image.source="https://github.com/zylarian/dockyard"
+LABEL org.opencontainers.image.description="Jupyter Lab ${JUPYTER_VERSION} - Interactive notebook development environment"
+LABEL org.opencontainers.image.vendor="Zylarian Innovations LLC"
+LABEL org.opencontainers.image.version="${JUPYTER_VERSION}"
+
+# Environment variables
+ENV JUPYTER_VERSION=${JUPYTER_VERSION} \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    JUPYTER_ENABLE_LAB=yes \
+    JUPYTER_PORT=8888 \
+    DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r jupyter -g 1000 && \
+    useradd -r -g jupyter -u 1000 -m -s /bin/bash jupyter
+
+# Set working directory
+WORKDIR /home/jupyter
+
+# Upgrade pip and install Jupyter Lab with common extensions
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir \
+    jupyterlab==${JUPYTER_VERSION} \
+    jupyterlab-git \
+    jupyterlab-lsp \
+    python-lsp-server[all] \
+    ipywidgets \
+    matplotlib \
+    numpy \
+    pandas \
+    scikit-learn \
+    seaborn \
+    plotly
+
+# Create directories and set permissions
+RUN mkdir -p /home/jupyter/notebooks /home/jupyter/data /home/jupyter/.jupyter && \
+    chown -R jupyter:jupyter /home/jupyter
+
+# Switch to non-root user
+USER jupyter
+
+# Configure Jupyter
+RUN jupyter lab --generate-config && \
+    echo "c.ServerApp.ip = '0.0.0.0'" >> /home/jupyter/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.port = 8888" >> /home/jupyter/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.open_browser = False" >> /home/jupyter/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.allow_root = False" >> /home/jupyter/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.token = ''" >> /home/jupyter/.jupyter/jupyter_lab_config.py && \
+    echo "c.ServerApp.password = ''" >> /home/jupyter/.jupyter/jupyter_lab_config.py
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8888/api || exit 1
+
+# Expose port
+EXPOSE 8888
+
+# Volume for persistent notebooks and data
+VOLUME ["/home/jupyter/notebooks", "/home/jupyter/data"]
+
+# Start Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.password=''"]

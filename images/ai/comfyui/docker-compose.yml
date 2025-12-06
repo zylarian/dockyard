@@ -1,0 +1,67 @@
+services:
+  comfyui:
+    # Use local build for testing
+    build:
+      context: .
+      dockerfile: build/Dockerfile.debian
+      args:
+        COMFYUI_VERSION: latest
+
+    container_name: comfyui
+    restart: unless-stopped
+    user: comfyui
+
+    ports:
+      - "8188:8188"
+
+    volumes:
+      # Persistent models
+      - comfyui_models:/app/ComfyUI/models
+      # Outputs
+      - comfyui_output:/app/ComfyUI/output
+      # Inputs
+      - comfyui_input:/app/ComfyUI/input
+      # Custom nodes
+      - comfyui_custom_nodes:/app/ComfyUI/custom_nodes
+      # Logs
+      - ./logs:/app/logs
+
+    environment:
+      # Timezone
+      - TZ=${TZ:-UTC}
+      # ComfyUI settings
+      - COMFYUI_PORT=8188
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8188/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    # Uncomment for GPU support (requires NVIDIA Docker)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  comfyui_models:
+    driver: local
+  comfyui_output:
+    driver: local
+  comfyui_input:
+    driver: local
+  comfyui_custom_nodes:
+    driver: local

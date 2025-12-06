@@ -1,0 +1,21 @@
+# ComfyUI Image Version Configuration
+# This file controls which version of ComfyUI to build
+
+# Current ComfyUI version (git commit or tag)
+COMFYUI_VERSION=latest
+
+# Release date
+RELEASE_DATE=2025-12-05
+
+# Supported variants
+VARIANTS="debian"
+
+# Supported architectures
+ARCHITECTURES="linux/amd64"
+
+# Image name
+IMAGE_NAME=zylarian/dockyard-comfyui
+
+# Tag strategy:
+# - latest                      -> Latest build
+# - latest-debian               -> Latest Debian build
