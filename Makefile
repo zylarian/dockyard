@@ -33,7 +33,12 @@ build-image: ## Build a specific image (usage: make build-image IMAGE=nginx)
 		exit 1; \
 	fi
 	@echo "$(BLUE)Building image: $(IMAGE)$(NC)"
-	@cd images/$(IMAGE) && docker build -t zylarian/$(IMAGE):local .
+	@if [ -f "stacks/$(IMAGE)/scripts/build.sh" ]; then \
+		echo "$(BLUE)Building using custom script...$(NC)"; \
+		cd stacks/$(IMAGE) && ./scripts/build.sh; \
+	else \
+		cd stacks/$(IMAGE) && docker build -t zylarian/$(IMAGE):local .; \
+	fi
 
 build-all-images: ## Build all images
 	@echo "$(BLUE)Building all images...$(NC)"
@@ -42,7 +47,7 @@ build-all-images: ## Build all images
 # Publish all images (builds and pushes to Docker Hub)
 publish-all: ## Build and publish all images + update docs
 	@echo "🚀 Publishing all images..."
-	@for dir in $$(find images -mindepth 2 -maxdepth 2 -type d | sort); do \
+	@for dir in $$(find stacks -mindepth 2 -maxdepth 2 -type d | sort); do \
 		if [ -f "$$dir/scripts/publish.sh" ]; then \
 			echo "📦 Publishing $$(basename $$dir)..."; \
 			(cd $$dir && ./scripts/publish.sh) || exit 1; \
@@ -58,7 +63,7 @@ update-hub-docs: ## Sync README.md to Docker Hub
 		echo "⚠️  docker-pushrm not found. Running setup..."; \
 		./scripts/setup-pushrm.sh; \
 	fi
-	@for dir in $$(find images -mindepth 2 -maxdepth 2 -type d | sort); do \
+	@for dir in $$(find stacks -mindepth 2 -maxdepth 2 -type d | sort); do \
 		if [ -f "$$dir/README.md" ]; then \
 			IMAGE_NAME="zylarian/dockyard-$$(basename $$dir)"; \
 			echo "📄 Updating docs for $$IMAGE_NAME..."; \
@@ -185,7 +190,7 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		echo "  $(GREEN)down$(NC)       - Stop and remove containers"; \
 		exit 1; \
 	fi; \
-	SERVICE_PATH=$$(find images -type f -path "*/$$SERVICE_NAME/docker-compose.yml" | head -n 1); \
+	SERVICE_PATH=$$(find stacks -type f -path "*/$$SERVICE_NAME/docker-compose.yml" | head -n 1); \
 	if [ -z "$$SERVICE_PATH" ]; then \
 		echo "$(RED)Error: Service '$$SERVICE_NAME' not found$(NC)"; \
 		exit 1; \

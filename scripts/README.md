@@ -57,7 +57,7 @@ Builds all Docker images locally.
 ```
 
 **Options:**
-- Builds each image in `images/` directory
+- Builds each image in `stacks/` directory
 - Tags as `zylarian/IMAGE_NAME:local`
 
 ---

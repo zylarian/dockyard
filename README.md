@@ -22,20 +22,16 @@ Standalone pre-configured images with:
 
 ```
 dockyard/
-├── stacks/          # Multi-service Docker Compose stacks
-│   ├── apps/       # Applications (WordPress, Ghost, Nextcloud...)
-│   ├── databases/  # Databases (PostgreSQL, MySQL, MongoDB...)
-│   ├── devtools/   # Dev tools (Gitea, Jenkins, SonarQube...)
-│   ├── monitoring/ # Monitoring (Grafana, Prometheus, Loki...)
-│   ├── networking/ # Network tools (Traefik, Nginx Proxy...)
-│   └── storage/    # Storage (MinIO, Seafile, Nextcloud...)
-├── images/         # Standalone preconfigured Docker images
-│   ├── ai/         # AI/ML tools (Langflow, Flowise, Dify...)
+├── stacks/         # Managed services and stacks
+│   ├── ai/         # AI/ML stacks and images (Langflow, Dify...)
 │   ├── automation/ # Automation tools (n8n...)
-│   └── devtools/   # Development tools (Code Server...)
+│   ├── databases/  # Databases (PostgreSQL, QDant...)
+│   ├── devtools/   # Development tools (Code Server...)
+│   ├── monitoring/ # Monitoring (Grafana, Prometheus...)
+│   └── networking/ # Networking tools
 ├── tools/          # Development and management tools
 │   └── portainer/  # Portainer with custom templates
-└── templates/      # Templates for creating new stacks/images
+└── templates/      # Templates for creating new stacks/imagess
 ```
 
 ## 🛠️ Tools

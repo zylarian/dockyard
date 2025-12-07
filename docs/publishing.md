@@ -17,7 +17,7 @@ docker login -u zylarian
 
 ```bash
 # Build the image
-cd images/langflow
+cd stacks/langflow
 docker build -t zylarian/langflow:latest .
 
 # Test locally
@@ -41,7 +41,7 @@ docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t zylarian/langflow:latest \
   --push \
-  images/langflow/
+  stacks/langflow/
 ```
 
 ## 📋 Image Naming Convention

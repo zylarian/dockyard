@@ -108,7 +108,7 @@ Renovate bot configuration for dependency updates:
 
 ### Adding a New Image
 
-1. Create directory in `images/`
+1. Create directory in `stacks/`
 2. Add Dockerfile, README.md, docker-compose.yml
 3. Validate locally:
    ```bash
@@ -148,7 +148,7 @@ Images are published manually using the provided scripts.
 
 ```bash
 # Build locally
-docker build -t zylarian/myimage:latest images/myimage/
+docker build -t zylarian/myimage:latest stacks/myimage/
 
 # Push to registry
 docker push zylarian/myimage:latest
@@ -158,14 +158,14 @@ For multi-arch (recommended):
 
 ```bash
 # Use the publish script if available
-./images/langflow/scripts/publish.sh
+./stacks/langflow/scripts/publish.sh
 
 # Or manually with buildx
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t zylarian/myimage:latest \
   --push \
-  images/myimage/
+  stacks/myimage/
 ```
 
 

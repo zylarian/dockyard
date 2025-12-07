@@ -1,57 +1,43 @@
-# Stacks Index
+# Preconfigured Docker Images
 
-Quick reference for all available stacks in Zylarian Dockyard.
+Standalone Docker images with optimized configurations, security hardening, and production-ready presets.
 
-## 📦 By Category
+## 🎯 Philosophy
 
-### Applications
-*Coming soon*
+Unlike stacks (multi-service setups), these are **standalone images** that you can use directly in your own projects. They're drop-in replacements for official images, but with:
+
+- ✅ Optimized configurations out of the box
+- ✅ Security hardening and best practices
+- ✅ Sensible defaults for production use
+- ✅ Multi-architecture support (amd64, arm64)
+- ✅ Minimal size and attack surface
+
+## 📁 Structure
+
+Each image should have its own directory:
+
+```
+image-name/
+├── Dockerfile              # Main Dockerfile
+├── README.md               # Image documentation
+├── docker-compose.yml      # Usage example
+├── configs/                # Default configurations (optional)
+└── scripts/                # Entrypoint scripts (optional)
+```
+
+## 🎁 Planned Images
+
+### Base Images
+- Alpine, Debian, Ubuntu with security hardening
+
+### Language Runtimes
+- Node.js, Python, Go, PHP with production presets
+
+### Web Servers
+- Nginx, Caddy, Apache with optimized configs
 
 ### Databases
-- [PostgreSQL + PgAdmin](./databases/postgresql/) - Complete PostgreSQL with web admin
+- PostgreSQL, MySQL, Redis with tuned settings
 
-### Development Tools
-*Coming soon*
-
-### Monitoring & Observability
-*Coming soon*
-
-### Networking
-*Coming soon*
-
-### Storage
-*Coming soon*
-
-## 🔍 By Use Case
-
-### Web Development
-- PostgreSQL + PgAdmin - Database for web applications
-
-### Data Analytics
-*Coming soon*
-
-### DevOps
-*Coming soon*
-
-## 📊 Quick Comparison
-
-| Stack | Category | Difficulty | Services | Ports Used |
-|-------|----------|------------|----------|------------|
-| PostgreSQL | Databases | Easy | 2 | 5432, 5050 |
-
-## 🆕 Recently Added
-
-- 2025-11-29: PostgreSQL + PgAdmin
-
-## 🔜 Coming Soon
-
-- MongoDB + Mongo Express
-- Redis + RedisInsight
-- Traefik Reverse Proxy
-- Grafana + Prometheus + Loki
-- GitLab CE
-- Nextcloud
-
-## Contributing
-
-Want to add a stack? See [../docs/CONTRIBUTING.md](../docs/CONTRIBUTING.md)
+### Tools
+- Backup utilities, cron runners, monitoring agents

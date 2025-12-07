@@ -1,6 +1,6 @@
 #!/bin/bash
 # Auto-generate Portainer templates.json from image directories
-# This script scans images/ directory and creates templates based on metadata
+# This script scans stacks/ directory and creates templates based on metadata
 
 set -e
 
@@ -35,7 +35,7 @@ add_comma() {
 }
 
 # Scan all image directories
-for category_dir in "$DOCKYARD_ROOT/images"/*; do
+for category_dir in "$DOCKYARD_ROOT/stacks"/*; do
     if [ ! -d "$category_dir" ]; then
         continue
     fi
@@ -198,7 +198,7 @@ EOF
 done
 
 # Add stack templates
-for category_dir in "$DOCKYARD_ROOT/images"/*; do
+for category_dir in "$DOCKYARD_ROOT/stacks"/*; do
     if [ ! -d "$category_dir" ]; then
         continue
     fi
@@ -272,7 +272,7 @@ for category_dir in "$DOCKYARD_ROOT/images"/*; do
       "logo": "$LOGO",
       "repository": {
         "url": "git://git-server/dockyard",
-        "stackfile": "images/$category/$image_name/docker-compose.yml"
+        "stackfile": "stacks/$category/$image_name/docker-compose.yml"
       }
     }
 EOF
