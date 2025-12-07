@@ -1,0 +1,43 @@
+services:
+  mattermost:
+    image: zylarian/dockyard-mattermost:local
+    container_name: mattermost
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8065}:8065"
+    environment:
+      - MM_SQLSETTINGS_DRIVERNAME=postgres
+      - MM_SQLSETTINGS_DATASOURCE=postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgresql:5432/${POSTGRES_DB:-mattermost}?sslmode=disable&connect_timeout=10
+      - MM_SERVICESETTINGS_SITEURL=http://localhost:${PORT:-8065}
+      - MM_FILESETTINGS_DRIVERNAME=local
+    volumes:
+      - mattermost_config:/mattermost/config
+      - mattermost_data:/mattermost/data
+      - mattermost_logs:/mattermost/logs
+      - mattermost_plugins:/mattermost/plugins
+      - mattermost_client_plugins:/mattermost/client/plugins
+      - mattermost_bleve_indexes:/mattermost/bleve-indexes
+    networks:
+      - dockyard
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+
+volumes:
+  mattermost_config:
+    name: mattermost_config
+  mattermost_data:
+    name: mattermost_data
+  mattermost_logs:
+    name: mattermost_logs
+  mattermost_plugins:
+    name: mattermost_plugins
+  mattermost_client_plugins:
+    name: mattermost_client_plugins
+  mattermost_bleve_indexes:
+    name: mattermost_bleve_indexes
+
+networks:
+  dockyard:
+    external: true

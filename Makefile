@@ -121,6 +121,9 @@ DatabaseServices := chromadb qdrant postgresql redis clickhouse
 # Documentation Services
 DocumentationServices := outline
 
+# Communication Services
+CommunicationServices := mattermost
+
 # Monitoring Services
 MonitoringServices := uptime-kuma grafana prometheus
 
@@ -139,6 +142,9 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		echo ""; \
 		echo "  $(GREEN)Automation Services:$(NC)"; \
 		for service in $(AutomationServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Communication Services:$(NC)"; \
+		for service in $(CommunicationServices); do echo "    - $$service"; done; \
 		echo ""; \
 		echo "  $(GREEN)Analytics Services:$(NC)"; \
 		for service in $(AnalyticsServices); do echo "    - $$service"; done; \
