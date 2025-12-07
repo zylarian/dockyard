@@ -20,8 +20,7 @@ make service redis logs
 - Redis 7 (Alpine Linux)
 - AOF persistence enabled
 - RDB snapshots
-- LRU eviction policy
-- Optimized for caching
+- PORT | External port | 6380 |Optimized for caching
 - Health checks
 
 ## Configuration

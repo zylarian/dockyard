@@ -107,7 +107,7 @@ pre-commit: validate lint ## Run pre-commit checks
 	@echo "$(GREEN)All pre-commit checks passed!$(NC)"
 
 # AI Services
-AIServices := ollama comfyui dify flowise langflow open-webui stable-diffusion-webui
+AIServices := ollama comfyui dify flowise langflow open-webui stable-diffusion-webui anything-llm tabby langfuse invokeai
 
 # Automation Services
 AutomationServices := n8n
@@ -116,21 +116,47 @@ AutomationServices := n8n
 AnalyticsServices := metabase
 
 # Database Services
-DatabaseServices := chromadb qdrant postgresql redis
+DatabaseServices := chromadb qdrant postgresql redis clickhouse
 
 # Documentation Services
 DocumentationServices := outline
 
 # Monitoring Services
-MonitoringServices := uptime-kuma
+MonitoringServices := uptime-kuma grafana prometheus
 
 # Development Tools
-DevToolsServices := jupyter-lab code-server
+DevToolsServices := jupyter-lab code-server gitea
 
 # Service management (generic for any service)
 service: ## Manage services (usage: make service <name> <start|stop|restart|logs>)
 	@SERVICE_NAME="$(word 2,$(MAKECMDGOALS))"; \
 	ACTION="$(word 3,$(MAKECMDGOALS))"; \
+	if [ "$$SERVICE_NAME" = "list" ]; then \
+		echo "$(BLUE)Available Zylarian Dockyard Services:$(NC)"; \
+		echo ""; \
+		echo "  $(GREEN)AI Services:$(NC)"; \
+		for service in $(AIServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Automation Services:$(NC)"; \
+		for service in $(AutomationServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Analytics Services:$(NC)"; \
+		for service in $(AnalyticsServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Database Services:$(NC)"; \
+		for service in $(DatabaseServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Documentation Services:$(NC)"; \
+		for service in $(DocumentationServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Monitoring Services:$(NC)"; \
+		for service in $(MonitoringServices); do echo "    - $$service"; done; \
+		echo ""; \
+		echo "  $(GREEN)Development Tools:$(NC)"; \
+		for service in $(DevToolsServices); do echo "    - $$service"; done; \
+		echo ""; \
+		exit 0; \
+	fi; \
 	if [ -z "$$SERVICE_NAME" ] || [ -z "$$ACTION" ]; then \
 		echo "$(YELLOW)Usage: make service <name> <action>$(NC)"; \
 		echo ""; \

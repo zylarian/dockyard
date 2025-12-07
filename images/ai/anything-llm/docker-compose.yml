@@ -1,0 +1,39 @@
+services:
+  anything-llm:
+    image: zylarian/dockyard-anything-llm:local
+    container_name: anything-llm
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3200}:3001"
+    environment:
+      - STORAGE_DIR=/app/server/storage
+      - JWT_SECRET=${JWT_SECRET:-generate-a-secure-jwt-secret}
+      - LLM_PROVIDER=${LLM_PROVIDER:-ollama}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - VECTOR_DB=${VECTOR_DB:-lancedb}
+    volumes:
+      - anything_llm_storage:/app/server/storage
+      - anything_llm_collector:/app/collector/hotdir
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3001/api/ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - dockyard
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+volumes:
+  anything_llm_storage:
+    name: anything_llm_storage
+  anything_llm_collector:
+    name: anything_llm_collector
+
+networks:
+  dockyard:
+    external: true

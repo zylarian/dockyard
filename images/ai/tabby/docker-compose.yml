@@ -1,0 +1,34 @@
+services:
+  tabby:
+    image: zylarian/dockyard-tabby:local
+    container_name: tabby
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8100}:8080"
+    command: serve --model ${TABBY_MODEL:-StarCoder-1B} --device ${TABBY_DEVICE:-cuda}
+    environment:
+      - TABBY_DISABLE_USAGE_COLLECTION=1
+    volumes:
+      - tabby_data:/data
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/v1/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - dockyard
+
+volumes:
+  tabby_data:
+    name: tabby_data
+
+networks:
+  dockyard:
+    external: true

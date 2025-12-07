@@ -1,0 +1,36 @@
+services:
+  invokeai:
+    image: zylarian/dockyard-invokeai:local
+    container_name: invokeai
+    restart: unless-stopped
+    ports:
+      - "${PORT:-9095}:9090"
+    environment:
+      - INVOKEAI_ROOT=/invokeai
+      - INVOKEAI_HOST=0.0.0.0
+      - INVOKEAI_PORT=9090
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - invokeai_data:/invokeai
+    #    deploy:
+    #      resources:
+    #        reservations:
+    #          devices:
+    #            - driver: nvidia
+    #              count: 1
+    #              capabilities: [ gpu ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090/api/v1/app/version" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - dockyard
+
+volumes:
+  invokeai_data:
+    name: invokeai_data
+
+networks:
+  dockyard:
+    external: true

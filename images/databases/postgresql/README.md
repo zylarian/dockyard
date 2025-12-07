@@ -55,7 +55,7 @@ The following databases are created automatically:
 
 ## Ports
 
-- **5432** - PostgreSQL port
+- **5432** - PORT | External port | 5433
 
 ## Volumes
 

@@ -7,7 +7,7 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
 
     ports:
-      - "6379:6379"
+      - "6380:6379"
 
     environment:
       - TZ=${TZ:-UTC}
@@ -27,6 +27,9 @@ services:
       retries: 5
       start_period: 10s
 
+    networks:
+      - dockyard
+
     deploy:
       resources:
         limits:
@@ -39,3 +42,7 @@ services:
 volumes:
   redis_data:
     driver: local
+
+networks:
+  dockyard:
+    external: true

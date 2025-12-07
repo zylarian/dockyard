@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
 
     ports:
-      - "5432:5432"
+      - "${PORT:-5433}:5432"
 
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
@@ -29,6 +29,9 @@ services:
       retries: 5
       start_period: 30s
 
+    networks:
+      - dockyard
+
     deploy:
       resources:
         limits:
@@ -41,3 +44,7 @@ services:
 volumes:
   postgresql_data:
     driver: local
+
+networks:
+  dockyard:
+    external: true

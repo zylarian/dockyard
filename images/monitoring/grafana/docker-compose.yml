@@ -1,0 +1,28 @@
+services:
+  grafana:
+    image: zylarian/dockyard-grafana:local
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3710}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_SERVER_ROOT_URL=http://localhost:${PORT:-3710}
+      - GF_INSTALL_PLUGINS=${GRAFANA_PLUGINS:-grafana-clock-panel,grafana-simple-json-datasource}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - dockyard
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+
+volumes:
+  grafana_data:
+    name: grafana_data
+
+networks:
+  dockyard:
+    external: true
