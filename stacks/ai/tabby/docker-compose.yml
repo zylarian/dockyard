@@ -8,10 +8,14 @@ services:
     command: serve --model ${TABBY_MODEL:-StarCoder-1B} --device ${TABBY_DEVICE:-cpu}
     environment:
       - TABBY_DISABLE_USAGE_COLLECTION=1
+      # Fix for libcuda.so.1 not found in CPU mode
+      - LD_LIBRARY_PATH=/usr/local/cuda-11.7/compat:/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+      - NVIDIA_VISIBLE_DEVICES=
+      - NVIDIA_REQUIRE_CUDA=
     volumes:
       - tabby_data:/data
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/v1/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/" ]
       interval: 30s
       timeout: 10s
       retries: 3
