@@ -18,16 +18,26 @@ Access the interface at http://localhost:8100
 |----------|-------------|---------|
 | PORT | External port | 8100 |
 | TABBY_MODEL | Model to use | StarCoder-1B |
-| TABBY_DEVICE | Device (cuda/cpu) | cuda |
+| TABBY_DEVICE | Device (cuda/cpu) | cpu |
 
 ### GPU Support
 
-This service is configured to use NVIDIA GPUs by default.
-Supported devices: `cuda`, `rocm`, `cpu`.
+This service is configured to use CPU by default for maximum compatibility.
 
-If you do NOT have a GPU, update `docker-compose.yml`:
-- Remove the `deploy` section
-- Set `TABBY_DEVICE=cpu`
+**To enable GPU acceleration:**
+1. Ensure you have NVIDIA Container Toolkit installed
+2. Create a `.env` file from `.env.example`
+3. Set `TABBY_DEVICE=cuda`
+4. Add the following to `docker-compose.yml` under the `tabby` service:
+   ```yaml
+   deploy:
+     resources:
+       reservations:
+         devices:
+           - driver: nvidia
+             count: 1
+             capabilities: [gpu]
+   ```
 
 ## IDE Integration
 

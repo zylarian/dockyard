@@ -196,11 +196,13 @@ service: ## Manage services (usage: make service <name> <start|stop|restart|logs
 		exit 1; \
 	fi; \
 	SERVICE_DIR=$$(dirname $$SERVICE_PATH); \
+	PROJECT_ROOT=$$(pwd); \
 	case "$$ACTION" in \
 		start) \
 			echo "$(BLUE)🚀 Starting $$SERVICE_NAME...$(NC)"; \
 			cd $$SERVICE_DIR && docker compose up -d; \
-			sleep 2; \
+			echo "$(BLUE)⏳ Waiting for $$SERVICE_NAME to be ready...$(NC)"; \
+			$$PROJECT_ROOT/scripts/wait-for-health.sh $$SERVICE_NAME || exit 1; \
 			PORT=$$(docker ps --filter name=$$SERVICE_NAME --format '{{.Ports}}' | grep -oP '0\.0\.0\.0:\K[0-9]+' | head -1); \
 			echo "$(GREEN)✅ $$SERVICE_NAME started$(NC)"; \
 			if [ -n "$$PORT" ]; then \

@@ -24,3 +24,22 @@
 - **Severity:** High
 - **Description:** Docker Hub publish fails with `400 Bad Request` due to a large layer size (>4GB).
 - **Workaround:** Image covers 11GB locally and works, but cannot be pushed to Docker Hub standard repository.
+
+## ⚠️ Service Limitations
+
+### Tabby Requires NVIDIA GPU
+- **Status:** Known Limitation
+- **Service:** Tabby
+- **Severity:** Medium
+- **Description:** The official `tabbyml/tabby:0.19.0` Docker image only includes CUDA-compiled binaries. Even the `/opt/tabby/bin/tabby-cpu` binary internally calls `llama-server` which requires `libcuda.so.1`, making it impossible to run on CPU-only systems.
+- **Error:** `error while loading shared libraries: libcuda.so.1: cannot open shared object file`
+- **Attempted Fixes:**
+  - Removed GPU deploy configuration from `docker-compose.yml`
+  - Set `TABBY_DEVICE=cpu` environment variable
+  - Changed entrypoint to `/opt/tabby/bin/tabby-cpu`
+  - All approaches failed - the underlying `llama-server` binary is CUDA-only
+- **Root Cause:** TabbyML official images are built with CUDA support only, with no dedicated CPU-only variant available.
+- **Recommendation:** Tabby requires a system with NVIDIA GPU and NVIDIA Container Toolkit installed.
+- **References:** 
+  - [Feature Request: CPU-only Docker tag](https://github.com/TabbyML/tabby/issues/...)
+  - See TabbyML documentation for CPU-only builds from source
